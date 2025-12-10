@@ -1,0 +1,12 @@
+{
+  "name": "firasah-ai",
+  "version": "1.0.0",
+  "description": "Firasah AI - Ancient Wisdom Meets Modern Technology",
+  "scripts": {
+    "build": "echo 'No build needed'"
+  },
+  "dependencies": {
+    "replicate": "^0.25.0"
+  },
+  "devDependencies": {}
+}

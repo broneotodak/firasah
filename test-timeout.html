@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Replicate Timeout</title>
+</head>
+<body>
+    <h1>Test Replicate API Connection</h1>
+    <button onclick="testTimeout()">Test Replicate API</button>
+    <pre id="result"></pre>
+    
+    <script>
+    async function testTimeout() {
+        document.getElementById('result').innerText = 'Testing...';
+        try {
+            const response = await fetch('/.netlify/functions/test-timeout', {
+                method: 'POST'
+            });
+            const data = await response.json();
+            document.getElementById('result').innerText = JSON.stringify(data, null, 2);
+        } catch (error) {
+            document.getElementById('result').innerText = 'Error: ' + error.message;
+        }
+    }
+    </script>
+</body>
+</html>

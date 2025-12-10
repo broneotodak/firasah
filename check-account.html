@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Check Replicate Account - Firasah AI</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #1a1a2e;
+            color: #eee;
+        }
+        .container {
+            background: #16213e;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(157, 78, 221, 0.3);
+        }
+        h1 { color: #9D4EDD; text-align: center; }
+        h2 { color: #C77DFF; }
+        button {
+            background: #9D4EDD;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            display: block;
+            margin: 20px auto;
+        }
+        button:hover { background: #7B2CBF; }
+        pre {
+            background: #0f3460;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+        }
+        .status { margin: 20px 0; padding: 15px; border-radius: 5px; }
+        .loading { background: #0f3460; color: #ffd93d; }
+        .error { background: #460f0f; color: #ff6b6b; }
+        .success { background: #0f4622; color: #51cf66; }
+        .advice {
+            background: #4a0f46;
+            color: #e599f7;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .model-status {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 3px;
+            margin: 5px;
+        }
+        .available { background: #0f4622; color: #51cf66; }
+        .unavailable { background: #460f0f; color: #ff6b6b; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Replicate Account Check</h1>
+        
+        <div class="status loading" id="status">Click the button to check your Replicate account status...</div>
+        
+        <button onclick="checkAccount()">Check Account & Models</button>
+        
+        <div id="results" style="display:none;">
+            <h2>Account Status:</h2>
+            <pre id="accountInfo">Loading...</pre>
+            
+            <h2>Model Availability:</h2>
+            <div id="modelStatus"></div>
+            
+            <div class="advice">
+                <h3>💡 Quick Fix Steps:</h3>
+                <ol>
+                    <li>Visit <a href="https://replicate.com" target="_blank" style="color: #e599f7;">replicate.com</a></li>
+                    <li>Search for "BLIP" or "image captioning"</li>
+                    <li>Click on any model and try "Run with API"</li>
+                    <li>This activates the model for your account</li>
+                    <li>Come back here and test again!</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function checkAccount() {
+            const statusEl = document.getElementById('status');
+            const resultsEl = document.getElementById('results');
+            const accountEl = document.getElementById('accountInfo');
+            const modelEl = document.getElementById('modelStatus');
+            
+            statusEl.textContent = 'Checking your Replicate account...';
+            statusEl.className = 'status loading';
+            resultsEl.style.display = 'none';
+            
+            try {
+                const response = await fetch('/.netlify/functions/check-replicate-account');
+                const data = await response.json();
+                
+                if (response.ok) {
+                    statusEl.textContent = '✅ Account check complete!';
+                    statusEl.className = 'status success';
+                    resultsEl.style.display = 'block';
+                    
+                    // Show account info
+                    accountEl.textContent = JSON.stringify(data.account, null, 2);
+                    
+                    // Show model status
+                    modelEl.innerHTML = data.models.map(model => 
+                        `<span class="model-status ${model.available ? 'available' : 'unavailable'}">
+                            ${model.name}: ${model.available ? '✅ Available' : '❌ Not Available'}
+                        </span>`
+                    ).join('');
+                    
+                } else {
+                    statusEl.textContent = '❌ Account check failed!';
+                    statusEl.className = 'status error';
+                    accountEl.textContent = JSON.stringify(data, null, 2);
+                }
+            } catch (error) {
+                statusEl.textContent = '❌ Error: ' + error.message;
+                statusEl.className = 'status error';
+            }
+        }
+    </script>
+</body>
+</html>

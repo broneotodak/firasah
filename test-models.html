@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Replicate Models - Firasah AI</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #1a1a2e;
+            color: #eee;
+        }
+        .container {
+            background: #16213e;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(157, 78, 221, 0.3);
+        }
+        h1 {
+            color: #9D4EDD;
+            text-align: center;
+        }
+        button {
+            background: #9D4EDD;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background: #7B2CBF;
+        }
+        pre {
+            background: #0f3460;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+        }
+        .status {
+            margin: 20px 0;
+            padding: 10px;
+            border-radius: 5px;
+            background: #0f3460;
+        }
+        .error {
+            background: #460f0f;
+            color: #ff6b6b;
+        }
+        .success {
+            background: #0f4622;
+            color: #51cf66;
+        }
+        #imageInput {
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Test Replicate Models</h1>
+        
+        <div class="status" id="status">Ready to test...</div>
+        
+        <div>
+            <button onclick="testModelAvailability()">Test Model Availability</button>
+            <button onclick="testWithImage()">Test With Sample Image</button>
+        </div>
+
+        <div id="imageInput" style="display:none;">
+            <input type="file" id="fileInput" accept="image/*">
+            <button onclick="uploadAndTest()">Test Selected Image</button>
+        </div>
+        
+        <h3>Results:</h3>
+        <pre id="results">No tests run yet.</pre>
+    </div>
+
+    <script>
+        const statusEl = document.getElementById('status');
+        const resultsEl = document.getElementById('results');
+
+        async function testModelAvailability() {
+            statusEl.textContent = 'Testing model availability...';
+            statusEl.className = 'status';
+            
+            try {
+                const response = await fetch('/.netlify/functions/test-replicate-model', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({})
+                });
+                
+                const data = await response.json();
+                resultsEl.textContent = JSON.stringify(data, null, 2);
+                
+                if (response.ok) {
+                    statusEl.textContent = 'Model check complete!';
+                    statusEl.className = 'status success';
+                } else {
+                    statusEl.textContent = 'Model check failed!';
+                    statusEl.className = 'status error';
+                }
+            } catch (error) {
+                statusEl.textContent = 'Error: ' + error.message;
+                statusEl.className = 'status error';
+                resultsEl.textContent = error.stack;
+            }
+        }
+
+        async function testWithImage() {
+            document.getElementById('imageInput').style.display = 'block';
+            statusEl.textContent = 'Please select an image to test...';
+        }
+
+        async function uploadAndTest() {
+            const fileInput = document.getElementById('fileInput');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                alert('Please select an image first');
+                return;
+            }
+            
+            statusEl.textContent = 'Processing image...';
+            statusEl.className = 'status';
+            
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+                const base64 = e.target.result;
+                
+                try {
+                    const response = await fetch('/.netlify/functions/test-replicate-model', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ image: base64 })
+                    });
+                    
+                    const data = await response.json();
+                    resultsEl.textContent = JSON.stringify(data, null, 2);
+                    
+                    if (response.ok) {
+                        statusEl.textContent = 'Image test complete!';
+                        statusEl.className = 'status success';
+                    } else {
+                        statusEl.textContent = 'Image test failed!';
+                        statusEl.className = 'status error';
+                    }
+                } catch (error) {
+                    statusEl.textContent = 'Error: ' + error.message;
+                    statusEl.className = 'status error';
+                    resultsEl.textContent = error.stack;
+                }
+            };
+            
+            reader.readAsDataURL(file);
+        }
+
+        // Test on load
+        window.onload = () => {
+            statusEl.textContent = 'Ready! Click a button to start testing.';
+        };
+    </script>
+</body>
+</html>

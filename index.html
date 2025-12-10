@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Firasah AI - Character Development for Writers</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>👁️</text></svg>">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <i class="fas fa-eye"></i>
+                <h1>Firasah AI</h1>
+                <span class="tagline">Ancient Wisdom Meets Modern Technology</span>
+            </div>
+            <nav class="nav">
+                <button class="nav-btn active" data-section="analyze">
+                    <i class="fas fa-camera"></i>
+                    <span>Analyze</span>
+                </button>
+                <button class="nav-btn" data-section="relationships">
+                    <i class="fas fa-heart"></i>
+                    <span>Relationships</span>
+                </button>
+                <button class="nav-btn" data-section="history">
+                    <i class="fas fa-history"></i>
+                    <span>History</span>
+                </button>
+            </nav>
+            <button id="theme-toggle-btn" class="theme-toggle-btn" title="Toggle theme">
+                <i class="fas fa-moon"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Analyze Section -->
+        <section id="analyze-section" class="content-section active">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Character Development</h2>
+                    <p>Upload AI-generated artwork or illustrations to develop fictional characters</p>
+                </div>
+
+                <!-- Upload Area -->
+                <div class="upload-container">
+                    <div class="upload-area" id="upload-area">
+                        <input type="file" id="file-input" accept="image/*" hidden>
+                        <div class="upload-content">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <h3>Drop your photo here</h3>
+                            <p>or click to browse</p>
+                            <button class="btn btn-primary" onclick="event.stopPropagation(); document.getElementById('file-input').click()">
+                                Choose Photo
+                            </button>
+                        </div>
+                        <img id="preview-image" class="preview-image" style="display: none;">
+                    </div>
+                    
+                    <button id="analyze-btn" class="btn btn-primary btn-large" style="display: none;">
+                        <i class="fas fa-search"></i>
+                        Develop Character
+                    </button>
+                </div>
+
+                <!-- Analysis Results -->
+                <div id="analysis-results" class="analysis-results" style="display: none;">
+                    <div class="results-header">
+                        <h3>Analysis Results</h3>
+                        <button class="btn btn-secondary btn-export" onclick="exportAnalysisAsJSON()">
+                            <i class="fas fa-download"></i>
+                            Export JSON
+                        </button>
+                    </div>
+                    <div id="results-content" class="results-content">
+                        <!-- Results will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Relationships Section -->
+        <section id="relationships-section" class="content-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Relationship Analysis</h2>
+                    <p>Compare two faces to understand relationship dynamics</p>
+                </div>
+
+                <div class="relationship-container">
+                    <div class="person-upload">
+                        <h4>Person 1</h4>
+                        <div class="mini-upload-area" id="person1-upload">
+                            <input type="file" id="person1-file" accept="image/*" hidden>
+                            <div class="upload-content">
+                                <i class="fas fa-user"></i>
+                                <p>Upload Photo</p>
+                            </div>
+                            <img id="person1-preview" class="preview-image" style="display: none;">
+                        </div>
+                    </div>
+
+                    <div class="vs-icon">
+                        <i class="fas fa-arrows-alt-h"></i>
+                    </div>
+
+                    <div class="person-upload">
+                        <h4>Person 2</h4>
+                        <div class="mini-upload-area" id="person2-upload">
+                            <input type="file" id="person2-file" accept="image/*" hidden>
+                            <div class="upload-content">
+                                <i class="fas fa-user"></i>
+                                <p>Upload Photo</p>
+                            </div>
+                            <img id="person2-preview" class="preview-image" style="display: none;">
+                        </div>
+                    </div>
+                </div>
+
+                <button id="compare-btn" class="btn btn-primary btn-large" style="display: none;">
+                    <i class="fas fa-balance-scale"></i>
+                    Analyze Relationship
+                </button>
+
+                <div id="relationship-results" class="analysis-results" style="display: none;">
+                    <!-- Relationship results will be populated here -->
+                </div>
+            </div>
+        </section>
+
+        <!-- History Section -->
+        <section id="history-section" class="content-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Analysis History</h2>
+                    <p>View your previous analyses and saved results</p>
+                </div>
+
+                <div class="history-filters">
+                    <button class="filter-btn active" data-filter="all">All</button>
+                    <button class="filter-btn" data-filter="individual">Individual</button>
+                    <button class="filter-btn" data-filter="relationship">Relationships</button>
+                </div>
+
+                <div id="history-grid" class="history-grid">
+                    <!-- History items will be populated here -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Loading Modal -->
+    <div id="loading-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="loader"></div>
+            <p id="loading-text">Analyzing face using traditional wisdom...</p>
+        </div>
+    </div>
+
+    <!-- Basic Scripts Only -->
+    <script src="app.js"></script>
+</body>
+</html>

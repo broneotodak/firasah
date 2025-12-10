@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Replicate Function</title>
+</head>
+<body>
+    <h1>Test Replicate Function</h1>
+    <button onclick="testFunction()">Test Function</button>
+    <pre id="result"></pre>
+    
+    <script>
+    async function testFunction() {
+        try {
+            const response = await fetch('/.netlify/functions/test-replicate');
+            const data = await response.json();
+            document.getElementById('result').innerText = JSON.stringify(data, null, 2);
+        } catch (error) {
+            document.getElementById('result').innerText = 'Error: ' + error.message;
+        }
+    }
+    </script>
+</body>
+</html>
