@@ -821,10 +821,10 @@ body.dark-theme .language-selector select {
 }
 
 /* ============================================
-   DARK MODE SUPPORT
+   DARK MODE SUPPORT (uses .dark-theme class)
    ============================================ */
 
-body.dark-mode {
+body.dark-theme {
     --background: #1a1a2e;
     --surface: #25253a;
     --surface-light: #2d2d44;
@@ -839,30 +839,30 @@ body.dark-mode {
     --primary-dark: #7B2CBF;
 }
 
-body.dark-mode .traits-box-positive {
+body.dark-theme .traits-box-positive {
     background: rgba(76, 175, 80, 0.15);
 }
 
-body.dark-mode .traits-box-positive h5 {
+body.dark-theme .traits-box-positive h5 {
     color: #81C784;
 }
 
-body.dark-mode .traits-box-negative {
+body.dark-theme .traits-box-negative {
     background: rgba(255, 152, 0, 0.15);
 }
 
-body.dark-mode .traits-box-negative h5 {
+body.dark-theme .traits-box-negative h5 {
     color: #FFB74D;
 }
 
-body.dark-mode .kitab-reference-item {
+body.dark-theme .kitab-reference-item {
     background: var(--surface-light);
 }
 
-body.dark-mode .firasah-disclaimer {
+body.dark-theme .firasah-disclaimer {
     background: rgba(255, 152, 0, 0.15);
 }
 
-body.dark-mode .firasah-disclaimer p {
+body.dark-theme .firasah-disclaimer p {
     color: #FFB74D;
 }
