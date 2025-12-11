@@ -100,41 +100,58 @@ OUTPUT LANGUAGE: ${lang.name}
 RULES:
 1. ONLY use interpretations from the Kitab reference above - NO assumptions
 2. Include Arabic terms (e.g., Al-Jabhah للجبهة) in your response
-3. If a feature doesn't match the Kitab exactly, say "ciri ini tidak disebut secara khusus"
+3. If a feature doesn't match the Kitab exactly, provide the closest interpretation
 4. Be balanced - mention both positive and negative traits
 5. Quote the animal comparisons from Kitab (e.g., "seperti harimau", "seperti kerbau")
+6. Write in an engaging, detailed manner - people love reading about themselves!
+
+IMPORTANT - BE COMPREHENSIVE:
+- overall_summary: Write 6-8 FULL sentences. Paint a complete picture of this person's character, their strengths, potential challenges, how they interact with others, their inner nature, and advice for self-improvement. Make it personal and insightful.
+- positive_traits: List 5-6 traits, each with a brief explanation (e.g., "Kecerdasan tinggi - mampu menganalisis situasi dengan tajam")
+- negative_traits: List 3-4 traits with gentle, constructive advice (e.g., "Kecenderungan marah - perlu belajar teknik pernafasan untuk mengawal emosi")
+- Each feature description: Write 2-3 detailed sentences connecting the physical feature to character traits
 
 OUTPUT JSON:
 {
   "translated_features": {
-    "dahi": {"description": "[Kitab interpretation with Arabic term]", "arabic": "الجبهة"},
-    "kening": {"description": "[Kitab interpretation]", "arabic": "الحواجب"},
-    "mata": {"description": "[Kitab interpretation]", "arabic": "العينين"},
-    "hidung": {"description": "[Kitab interpretation]", "arabic": "الأنف"},
-    "mulut_bibir": {"description": "[Kitab interpretation]", "arabic": "الفم"},
-    "bentuk_wajah": {"description": "[Kitab interpretation]", "arabic": "الوجه"},
-    "rahang_dagu": {"description": "[Kitab interpretation]", "arabic": "الذقن"},
-    "pipi": {"description": "[Kitab interpretation]", "arabic": "الخد"},
-    "telinga": {"description": "[Kitab interpretation]", "arabic": "الأذن"},
-    "garis_rambut": {"description": "[Kitab interpretation]", "arabic": "الشعر"}
+    "dahi": {"description": "[2-3 sentences: physical observation + Kitab interpretation + character meaning]", "arabic": "الجبهة"},
+    "kening": {"description": "[2-3 sentences]", "arabic": "الحواجب"},
+    "mata": {"description": "[2-3 sentences]", "arabic": "العينين"},
+    "hidung": {"description": "[2-3 sentences]", "arabic": "الأنف"},
+    "mulut_bibir": {"description": "[2-3 sentences]", "arabic": "الفم"},
+    "bentuk_wajah": {"description": "[2-3 sentences]", "arabic": "الوجه"},
+    "rahang_dagu": {"description": "[2-3 sentences]", "arabic": "الذقن"},
+    "pipi": {"description": "[2-3 sentences]", "arabic": "الخد"},
+    "telinga": {"description": "[2-3 sentences]", "arabic": "الأذن"},
+    "garis_rambut": {"description": "[2-3 sentences]", "arabic": "الشعر"}
   },
   "character_interpretation": {
-    "positive_traits": ["trait from Kitab", "trait from Kitab"],
-    "negative_traits": ["trait from Kitab (with gentle advice)"],
-    "personality_type": "Mizaj type with Arabic term",
-    "overall_summary": "[3-4 sentences summarizing character based on Kitab findings]"
+    "positive_traits": ["trait 1 - explanation", "trait 2 - explanation", "trait 3 - explanation", "trait 4 - explanation", "trait 5 - explanation"],
+    "negative_traits": ["trait 1 - constructive advice", "trait 2 - constructive advice", "trait 3 - constructive advice"],
+    "personality_type": "[Mizaj type] ([Arabic term]) - [2-3 sentences explaining this temperament, its strengths, and how it manifests in daily life]",
+    "overall_summary": "[6-8 FULL SENTENCES: Comprehensive character portrait covering personality, strengths, challenges, social nature, inner world, potential, and wisdom from the Kitab. Make it meaningful and personal.]"
   },
   "kitab_references": [
-    {"feature": "name", "quote": "exact quote from Kitab reference", "arabic_term": "Arabic"}
+    {"feature": "feature name", "quote": "exact quote from Kitab", "arabic_term": "Arabic"},
+    {"feature": "feature name", "quote": "exact quote from Kitab", "arabic_term": "Arabic"},
+    {"feature": "feature name", "quote": "exact quote from Kitab", "arabic_term": "Arabic"},
+    {"feature": "feature name", "quote": "exact quote from Kitab", "arabic_term": "Arabic"}
   ],
   "disclaimer": "${lang.disclaimer}"
 }`;
 
-    const userPrompt = `Analyze these facial features using ONLY the Kitab Firasat reference. Write in ${lang.name}:
+    const userPrompt = `Analyze these facial features using the Kitab Firasat reference. Write a COMPREHENSIVE, DETAILED interpretation in ${lang.name}. 
 
+People are excited to learn about themselves - give them a rich, insightful reading they'll remember!
+
+FACIAL FEATURES TO ANALYZE:
 ${llavaAnalysis}
 
-Match each feature to the Kitab reference and include Arabic terms.`;
+Remember: 
+- Overall summary must be 6-8 full sentences
+- Each trait needs an explanation
+- Include animal comparisons from Kitab
+- Make it personal and engaging`;
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
@@ -142,8 +159,8 @@ Match each feature to the Kitab reference and include Arabic terms.`;
       body: JSON.stringify({
         model: 'gpt-4o-mini',
         messages: [{ role: 'system', content: systemPrompt }, { role: 'user', content: userPrompt }],
-        temperature: 0.5,
-        max_tokens: 2000,
+        temperature: 0.7,
+        max_tokens: 3000,
         response_format: { type: "json_object" }
       })
     });
