@@ -1,7 +1,5 @@
 // netlify/functions/interpret-character.js
-// Uses OpenAI to translate LLaVA analysis and interpret character traits from Kitab Firasat
-
-const kitabFirasatRules = require('../../kitab-firasat-rules.json');
+// Simplified version to avoid timeout
 
 exports.handler = async (event, context) => {
   const headers = {
@@ -39,7 +37,7 @@ exports.handler = async (event, context) => {
         positiveLabel: 'Positive Traits',
         negativeLabel: 'Traits to Watch',
         personalityLabel: 'Personality Type',
-        disclaimerText: 'This interpretation is based on classical Islamic physiognomy (Ilmu Firasat) from Kitab Firasat by Imam Fakhruddin ar-Razi. It is not fortune-telling or absolute prediction. Character can change through effort, environment, and divine will.'
+        disclaimer: 'Based on classical Islamic physiognomy (Kitab Firasat). Not fortune-telling.'
       },
       my: {
         name: 'Bahasa Melayu',
@@ -47,7 +45,7 @@ exports.handler = async (event, context) => {
         positiveLabel: 'Sifat Positif',
         negativeLabel: 'Sifat Perlu Diperhatikan',
         personalityLabel: 'Jenis Kepribadian',
-        disclaimerText: 'Tafsiran ini berdasarkan ilmu Firasat klasik Islam daripada Kitab Firasat karya Imam Fakhruddin ar-Razi. Ini bukan ramalan nasib atau takdir mutlak. Karakter seseorang boleh berubah melalui usaha, persekitaran, dan kehendak Ilahi.'
+        disclaimer: 'Berdasarkan ilmu Firasat klasik Islam. Bukan ramalan nasib.'
       },
       id: {
         name: 'Bahasa Indonesia',
@@ -55,100 +53,61 @@ exports.handler = async (event, context) => {
         positiveLabel: 'Sifat Positif',
         negativeLabel: 'Sifat yang Perlu Diperhatikan',
         personalityLabel: 'Tipe Kepribadian',
-        disclaimerText: 'Penafsiran ini berdasarkan ilmu Firasat klasik Islam dari Kitab Firasat karya Imam Fakhruddin ar-Razi. Ini bukan ramalan nasib atau takdir mutlak. Karakter seseorang dapat berubah melalui usaha, lingkungan, dan kehendak Ilahi.'
+        disclaimer: 'Berdasarkan ilmu Firasat klasik Islam. Bukan ramalan nasib.'
       }
     };
 
     const lang = langConfig[language] || langConfig.my;
 
-    // Build detailed system prompt
-    const systemPrompt = `Anda adalah pakar dalam ilmu Firasat berdasarkan Kitab Firasat karya Imam Fakhruddin ar-Razi (1150-1210 M).
+    // Simplified prompt - no large JSON to avoid timeout
+    const systemPrompt = `You are an expert in Ilmu Firasat (Islamic physiognomy) based on Kitab Firasat by Imam Fakhruddin ar-Razi (1150-1210 CE).
 
-BAHASA OUTPUT: ${lang.name}
+OUTPUT LANGUAGE: ${lang.name}
 
-TUGAS ANDA:
-1. Analisis ciri-ciri wajah yang diberikan
-2. Berikan tafsiran TERPERINCI berdasarkan Kitab Firasat
-3. Tulis dalam ${lang.name} yang formal dan mudah difahami
+KEY FIRASAT PRINCIPLES:
+- Large forehead = lazy/angry; Small forehead = foolish
+- Thick eyebrows = sorrowful; Arched eyebrows = deceptive
+- Large eyes = lazy; Sunken eyes = cunning; Bright eyes = intelligent
+- Sharp nose = confrontational; Curved nose = noble soul
+- Thick lips = stubborn; Thin lips = good character
+- Round face = simple-minded; Oval face = balanced
+- Large ears = long life; Small ears = quick-witted
+- Four temperaments: Sanguine (hot), Phlegmatic (cold), Melancholic (wet), Choleric (dry)
 
-PANDUAN KITAB FIRASAT:
-${JSON.stringify(kitabFirasatRules.features, null, 2)}
+TASK: Analyze the facial features and provide detailed character interpretation.
 
-PRINSIP UMUM FIRASAT:
-${JSON.stringify(kitabFirasatRules.general_principles, null, 2)}
-
-JENIS KEPRIBADIAN (Empat Mizaj):
-${JSON.stringify(kitabFirasatRules.personality_types, null, 2)}
-
-PERINGATAN PENTING:
-${JSON.stringify(kitabFirasatRules.warnings, null, 2)}
-
-ARAHAN PENTING - BUAT TAFSIRAN YANG PANJANG DAN TERPERINCI:
-
-1. RINGKASAN KARAKTER (overall_summary):
-   - Tulis MINIMUM 4-5 ayat yang lengkap
-   - Mulakan dengan gambaran umum kepribadian
-   - Huraikan kekuatan utama individu
-   - Nyatakan bagaimana ciri-ciri fizikal mencerminkan karakter dalaman
-   - Akhiri dengan potensi dan nasihat berdasarkan Kitab Firasat
-   - Gunakan bahasa yang sopan dan membina
-
-2. SIFAT POSITIF (positive_traits):
-   - Senaraikan MINIMUM 5 sifat positif
-   - Setiap sifat dengan huraian ringkas
-
-3. SIFAT PERLU DIPERHATIKAN (negative_traits):
-   - Senaraikan 3-4 sifat yang perlu diperbaiki
-   - Gunakan bahasa yang lembut dan membina (bukan menghukum)
-
-4. TAFSIRAN SETIAP CIRI (translated_features):
-   - Untuk SETIAP ciri wajah, tulis 2-3 ayat tafsiran
-   - Sertakan rujukan kepada Kitab Firasat
-   - Jelaskan makna dan implikasinya
-
-5. RUJUKAN KITAB (kitab_references):
-   - Sertakan MINIMUM 3 petikan atau rujukan
-   - Nyatakan pasal/bahagian dalam Kitab Firasat
-
-FORMAT OUTPUT (JSON):
+OUTPUT FORMAT (JSON):
 {
   "translated_features": {
-    "dahi": { "description": "[Tafsiran 2-3 ayat dalam ${lang.name}]", "original": "[English from LLaVA]" },
-    "kening": { "description": "[Tafsiran 2-3 ayat]", "original": "[English]" },
-    "mata": { "description": "[Tafsiran 2-3 ayat]", "original": "[English]" },
-    "hidung": { "description": "[Tafsiran 2-3 ayat]", "original": "[English]" },
-    "mulut_bibir": { "description": "[Tafsiran 2-3 ayat]", "original": "[English]" },
-    "bentuk_wajah": { "description": "[Tafsiran 2-3 ayat]", "original": "[English]" },
-    "rahang_dagu": { "description": "[Tafsiran 2-3 ayat]", "original": "[English]" },
-    "pipi": { "description": "[Tafsiran 2-3 ayat]", "original": "[English]" },
-    "telinga": { "description": "[Tafsiran 2-3 ayat]", "original": "[English]" },
-    "garis_rambut": { "description": "[Tafsiran 2-3 ayat]", "original": "[English]" }
+    "dahi": {"description": "[2-3 sentences in ${lang.name}]", "original": "[English]"},
+    "kening": {"description": "[2-3 sentences]", "original": "[English]"},
+    "mata": {"description": "[2-3 sentences]", "original": "[English]"},
+    "hidung": {"description": "[2-3 sentences]", "original": "[English]"},
+    "mulut_bibir": {"description": "[2-3 sentences]", "original": "[English]"},
+    "bentuk_wajah": {"description": "[2-3 sentences]", "original": "[English]"},
+    "rahang_dagu": {"description": "[2-3 sentences]", "original": "[English]"},
+    "pipi": {"description": "[2-3 sentences]", "original": "[English]"},
+    "telinga": {"description": "[2-3 sentences]", "original": "[English]"},
+    "garis_rambut": {"description": "[2-3 sentences]", "original": "[English]"}
   },
   "character_interpretation": {
-    "positive_traits": ["[Sifat 1 dengan huraian]", "[Sifat 2 dengan huraian]", "[minimum 5 sifat]"],
-    "negative_traits": ["[Sifat 1 - dengan nasihat]", "[Sifat 2 - dengan nasihat]"],
-    "personality_type": "[Sanguinis/Flegmatis/Melankolis/Koleris atau gabungan dengan penjelasan]",
-    "overall_summary": "[TULIS MINIMUM 4-5 AYAT YANG LENGKAP DAN TERPERINCI tentang keseluruhan karakter]"
+    "positive_traits": ["trait 1", "trait 2", "trait 3", "trait 4", "trait 5"],
+    "negative_traits": ["trait 1 (gentle advice)", "trait 2 (gentle advice)"],
+    "personality_type": "Sanguine/Phlegmatic/Melancholic/Choleric with explanation",
+    "overall_summary": "[4-5 detailed sentences about overall character]"
   },
   "kitab_references": [
-    { "feature": "[Nama ciri]", "quote": "[Petikan dari Kitab Firasat]", "source": "[Pasal/Bahagian]" },
-    { "feature": "[Nama ciri]", "quote": "[Petikan]", "source": "[Pasal]" },
-    { "feature": "[Nama ciri]", "quote": "[Petikan]", "source": "[Pasal]" }
+    {"feature": "name", "quote": "Kitab Firasat quote", "source": "Section name"}
   ],
-  "disclaimer": "${lang.disclaimerText}"
+  "disclaimer": "${lang.disclaimer}"
 }`;
 
-
-    const userPrompt = `Analisis ciri-ciri wajah berikut dan berikan tafsiran TERPERINCI berdasarkan Kitab Firasat:
+    const userPrompt = `Analyze these facial features from Kitab Firasat perspective. Write in ${lang.name}:
 
 ${llavaAnalysis}
 
-INGAT:
-- Tulis dalam ${lang.name}
-- Ringkasan karakter MESTI 4-5 ayat minimum
-- Setiap tafsiran ciri 2-3 ayat
-- Sertakan minimum 3 rujukan Kitab Firasat
-- Output dalam format JSON yang ditetapkan`;
+Provide detailed interpretation in JSON format.`;
+
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
@@ -163,14 +122,13 @@ INGAT:
           { role: 'user', content: userPrompt }
         ],
         temperature: 0.7,
-        max_tokens: 3000,
+        max_tokens: 2000,
         response_format: { type: "json_object" }
       })
     });
 
     if (!response.ok) {
       const errorData = await response.text();
-      console.error('OpenAI API error:', errorData);
       return {
         statusCode: response.status,
         headers,
@@ -181,14 +139,20 @@ INGAT:
     const data = await response.json();
     const interpretation = JSON.parse(data.choices[0].message.content);
 
+    const source = {
+      title: "Kitab Firasat",
+      author: "Imam Fakhruddin ar-Razi",
+      period: "1150-1210 M"
+    };
+
     return {
       statusCode: 200,
       headers,
       body: JSON.stringify({
         success: true,
         interpretation,
-        source: kitabFirasatRules.source,
-        language: language,
+        source,
+        language,
         langConfig: lang,
         usage: data.usage
       })
