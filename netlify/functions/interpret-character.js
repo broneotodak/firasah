@@ -160,7 +160,8 @@ PENTING: Gunakan perbandingan haiwan (harimau, kerbau, elang, kera). Summary MES
         language,
         langConfig: lang,
         usage,
-        provider
+        provider,
+        debug: { availableProviders, orderedProviders }
       })
     };
 
