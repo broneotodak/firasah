@@ -1,5 +1,5 @@
 // netlify/functions/interpret-character.js
-// Optimized with accurate Kitab Firasat references + Arabic terms
+// Optimized for speed + comprehensive output
 
 exports.handler = async (event, context) => {
   const headers = {
@@ -30,128 +30,56 @@ exports.handler = async (event, context) => {
     }
 
     const langConfig = {
-      en: { name: 'English', summaryLabel: 'Character Summary', positiveLabel: 'Positive Traits', negativeLabel: 'Traits to Watch', personalityLabel: 'Personality Type', disclaimer: 'Based on Kitab Firasat by Imam Fakhruddin ar-Razi (1150-1210 CE). Classical Islamic physiognomy for character understanding, not fortune-telling.' },
-      my: { name: 'Bahasa Melayu', summaryLabel: 'Ringkasan Karakter', positiveLabel: 'Sifat Positif', negativeLabel: 'Sifat Perlu Diperhatikan', personalityLabel: 'Jenis Kepribadian', disclaimer: 'Berdasarkan Kitab Firasat karya Imam Fakhruddin ar-Razi (1150-1210 M). Ilmu firasat Islam klasik untuk memahami karakter, bukan ramalan nasib.' },
-      id: { name: 'Bahasa Indonesia', summaryLabel: 'Ringkasan Karakter', positiveLabel: 'Sifat Positif', negativeLabel: 'Sifat Perlu Diperhatikan', personalityLabel: 'Tipe Kepribadian', disclaimer: 'Berdasarkan Kitab Firasat karya Imam Fakhruddin ar-Razi (1150-1210 M). Ilmu firasat Islam klasik untuk memahami karakter, bukan ramalan nasib.' }
+      en: { name: 'English', disclaimer: 'Based on Kitab Firasat by Imam Fakhruddin ar-Razi (1150-1210 CE). Classical Islamic physiognomy, not fortune-telling.' },
+      my: { name: 'Bahasa Melayu', disclaimer: 'Berdasarkan Kitab Firasat karya Imam Fakhruddin ar-Razi (1150-1210 M). Ilmu firasat Islam klasik, bukan ramalan nasib.' },
+      id: { name: 'Bahasa Indonesia', disclaimer: 'Berdasarkan Kitab Firasat karya Imam Fakhruddin ar-Razi (1150-1210 M). Ilmu firasat Islam klasik, bukan ramalan nasib.' }
     };
     const lang = langConfig[language] || langConfig.my;
 
-    // ACCURATE Kitab Firasat Reference with Arabic Terms (from actual book extraction)
-    const kitabReference = `
-KITAB FIRASAT - Imam Fakhruddin ar-Razi (الفراسة)
+    // Condensed Kitab Firasat Reference (accurate but shorter)
+    const kitabRef = `KITAB FIRASAT (الفراسة) - Imam Fakhruddin ar-Razi:
+DAHI(الجبهة): besar=pemalas,pemarah|kecil=bodoh|berkerut=congkak|rata=pengacau
+KENING(الحواجب): lebat=berduka|miring=congkak,dungu
+MATA(العينين): besar=pemalas(kerbau)|melotot=bodoh(keledai)|cekung=jahat(kera)|agak-cekung=jiwa-baik(harimau)|bersinar=cerdas|bergerak-cepat=penipu
+HIDUNG(الأنف): lancip=permusuhan(anjing)|tebal=kurang-paham(kerbau)|mancung=jiwa-mulia(elang)|lubang-besar=pemarah
+MULUT(الفم): lebar=syahwat(harimau)|tebal=keras-kepala|tipis=jiwa-baik
+WAJAH(الوجه): gemuk=pemalas(kerbau)|kurus=teliti|bundar=bodoh(kera)|oval=seimbang
+TELINGA(الأذن): besar=panjang-umur(keledai)|kecil=cerdas
+LEHER(العنق): tebal=kuat|tipis=lemah|seimbang=jiwa-baik(harimau)|pendek=penipu(serigala)
+MIZAJ: Sanguinis(دموي)=cerdas,berani|Flegmatis(بلغمي)=lambat,penakut|Melankolis(سوداوي)=mengantuk|Koleris(صفراوي)=tabah,sabar`;
 
-DAHI (الجبهة - Al-Jabhah):
-• Berkerut & rata → Pemarah | Besar → Pemalas & pemarah | Kecil → Bodoh (otak kecil)
-• Banyak kerutan → Congkak | Rata tanpa kerutan → Pengacau
+    const systemPrompt = `You are a Kitab Firasat expert. Use ONLY this reference with Arabic terms:
+${kitabRef}
 
-KENING (الحواجب - Al-Hawajib):
-• Berbulu lebat → Sering berduka, tutur kata buruk (dominasi empedu hitam)
-• Miring ke bawah dari hidung → Congkak & dungu
+Write in ${lang.name}. Be COMPREHENSIVE and engaging - people love detailed readings about themselves!
 
-MATA (العينين - Al-'Aynayn):
-• Besar → Pemalas (seperti kerbau) | Melotot → Bodoh & banyak mulut (seperti keledai)
-• Cekung → Jahat (seperti kera) | Agak cekung → Jiwa baik (seperti harimau)
-• Hitam pekat → Penakut | Merah bara → Pemarah | Biru/putih → Penakut
-• Bergerak cepat & tajam → Penipu & pencuri | Lambat/kaku → Banyak berfikir
-• Bersinar & mengilap → Gemar bersetubuh
-
-HIDUNG (الأنف - Al-Anf):
-• Ujung lancip → Suka permusuhan & peragu (seperti anjing)
-• Tebal & penuh → Kurang pemahaman (seperti kerbau) | Pesek → Syahwat besar
-• Lubang besar → Pemarah | Melengkung dari dahi → Tidak tahu malu (seperti gagak)
-• Melengkung (mancung) → Jiwa baik (seperti elang)
-
-MULUT & BIBIR (الفم - Al-Fam):
-• Lebar → Syahwat besar (seperti harimau) | Tebal → Bodoh & keras kepala
-• Tipis & lemas → Jiwa baik | Pucat → Sering sakit
-• Gigi taring panjang & kuat → Serakah & jahat
-
-WAJAH (الوجه - Al-Wajh):
-• Gemuk/berdaging → Pemalas & bodoh (seperti kerbau) | Kurus → Cermat & teliti
-• Bundar → Bodoh & jiwa hina (seperti kera) | Besar → Pemalas
-• Kecil → Hina & suka merayu | Panjang → Tidak tahu malu (seperti anjing)
-• Buruk → Biasanya akhlak buruk
-
-TELINGA (الأذن - Al-Udzun):
-• Besar → Bodoh tapi panjang umur (seperti keledai, dominasi sifat kering)
-
-LEHER (العنق - Al-'Unuq):
-• Tebal → Kuat & perkasa | Tipis → Lemah | Tebal & penuh → Pemarah
-• Seimbang → Jiwa baik (seperti harimau) | Kecil & panjang → Penakut (seperti unta)
-• Terlalu pendek → Pembuat tipu daya (seperti serigala)
-
-EMPAT MIZAJ (Kepribadian):
-• Sanguinis (Panas/دموي): Cerdas, pemberani, heroik - dada bidang, kulit merah
-• Flegmatis (Dingin/بلغمي): Lambat berfikir, penakut - tubuh lemah, suara lirih
-• Melankolis (Basah/سوداوي): Mudah mengantuk, tidak tabah - otot lemah, kulit tipis
-• Koleris (Kering/صفراوي): Indra peka, tabah, sabar - persendian kuat, kulit kasar
-
-PRINSIP: "Semakin banyak petunjuk yang cocok, semakin mendekati kepastian kesimpulannya"
-`;
-
-
-    const systemPrompt = `You are an expert in Ilmu Firasat based on Kitab Firasat by Imam Fakhruddin ar-Razi.
-
-REFERENCE (USE THIS ACCURATELY - include Arabic terms):
-${kitabReference}
-
-OUTPUT LANGUAGE: ${lang.name}
-
-RULES:
-1. ONLY use interpretations from the Kitab reference above - NO assumptions
-2. Include Arabic terms (e.g., Al-Jabhah للجبهة) in your response
-3. If a feature doesn't match the Kitab exactly, provide the closest interpretation
-4. Be balanced - mention both positive and negative traits
-5. Quote the animal comparisons from Kitab (e.g., "seperti harimau", "seperti kerbau")
-6. Write in an engaging, detailed manner - people love reading about themselves!
-
-IMPORTANT - BE COMPREHENSIVE:
-- overall_summary: Write 6-8 FULL sentences. Paint a complete picture of this person's character, their strengths, potential challenges, how they interact with others, their inner nature, and advice for self-improvement. Make it personal and insightful.
-- positive_traits: List 5-6 traits, each with a brief explanation (e.g., "Kecerdasan tinggi - mampu menganalisis situasi dengan tajam")
-- negative_traits: List 3-4 traits with gentle, constructive advice (e.g., "Kecenderungan marah - perlu belajar teknik pernafasan untuk mengawal emosi")
-- Each feature description: Write 2-3 detailed sentences connecting the physical feature to character traits
-
-OUTPUT JSON:
+OUTPUT (JSON):
 {
   "translated_features": {
-    "dahi": {"description": "[2-3 sentences: physical observation + Kitab interpretation + character meaning]", "arabic": "الجبهة"},
+    "dahi": {"description": "[2-3 sentences with Kitab interpretation]", "arabic": "الجبهة"},
     "kening": {"description": "[2-3 sentences]", "arabic": "الحواجب"},
     "mata": {"description": "[2-3 sentences]", "arabic": "العينين"},
     "hidung": {"description": "[2-3 sentences]", "arabic": "الأنف"},
     "mulut_bibir": {"description": "[2-3 sentences]", "arabic": "الفم"},
     "bentuk_wajah": {"description": "[2-3 sentences]", "arabic": "الوجه"},
     "rahang_dagu": {"description": "[2-3 sentences]", "arabic": "الذقن"},
-    "pipi": {"description": "[2-3 sentences]", "arabic": "الخد"},
-    "telinga": {"description": "[2-3 sentences]", "arabic": "الأذن"},
-    "garis_rambut": {"description": "[2-3 sentences]", "arabic": "الشعر"}
+    "telinga": {"description": "[2-3 sentences]", "arabic": "الأذن"}
   },
   "character_interpretation": {
-    "positive_traits": ["trait 1 - explanation", "trait 2 - explanation", "trait 3 - explanation", "trait 4 - explanation", "trait 5 - explanation"],
-    "negative_traits": ["trait 1 - constructive advice", "trait 2 - constructive advice", "trait 3 - constructive advice"],
-    "personality_type": "[Mizaj type] ([Arabic term]) - [2-3 sentences explaining this temperament, its strengths, and how it manifests in daily life]",
-    "overall_summary": "[6-8 FULL SENTENCES: Comprehensive character portrait covering personality, strengths, challenges, social nature, inner world, potential, and wisdom from the Kitab. Make it meaningful and personal.]"
+    "positive_traits": ["5-6 traits with explanations"],
+    "negative_traits": ["3-4 traits with gentle advice"],
+    "personality_type": "[Mizaj] (Arabic) - detailed explanation",
+    "overall_summary": "[WRITE 6-8 FULL SENTENCES: Complete character portrait - personality, strengths, challenges, social nature, potential, and Kitab wisdom. Make it personal and meaningful!]"
   },
-  "kitab_references": [
-    {"feature": "feature name", "quote": "exact quote from Kitab", "arabic_term": "Arabic"},
-    {"feature": "feature name", "quote": "exact quote from Kitab", "arabic_term": "Arabic"},
-    {"feature": "feature name", "quote": "exact quote from Kitab", "arabic_term": "Arabic"},
-    {"feature": "feature name", "quote": "exact quote from Kitab", "arabic_term": "Arabic"}
-  ],
+  "kitab_references": [{"feature":"name","quote":"Kitab quote","arabic_term":"Arabic"}],
   "disclaimer": "${lang.disclaimer}"
 }`;
 
-    const userPrompt = `Analyze these facial features using the Kitab Firasat reference. Write a COMPREHENSIVE, DETAILED interpretation in ${lang.name}. 
+    const userPrompt = `Analyze with Kitab Firasat. Give RICH, DETAILED interpretation in ${lang.name}:
 
-People are excited to learn about themselves - give them a rich, insightful reading they'll remember!
-
-FACIAL FEATURES TO ANALYZE:
 ${llavaAnalysis}
 
-Remember: 
-- Overall summary must be 6-8 full sentences
-- Each trait needs an explanation
-- Include animal comparisons from Kitab
-- Make it personal and engaging`;
+IMPORTANT: Write 6-8 sentences for overall_summary. Include animal comparisons (harimau, kerbau, etc). Make it engaging!`;
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
@@ -160,7 +88,7 @@ Remember:
         model: 'gpt-4o-mini',
         messages: [{ role: 'system', content: systemPrompt }, { role: 'user', content: userPrompt }],
         temperature: 0.7,
-        max_tokens: 3000,
+        max_tokens: 2500,
         response_format: { type: "json_object" }
       })
     });
