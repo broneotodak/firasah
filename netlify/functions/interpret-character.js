@@ -119,6 +119,7 @@ PENTING: Gunakan perbandingan haiwan (harimau, kerbau, elang, kera). Summary MES
     let interpretation = null;
     let usage = null;
     let provider = null;
+    let geminiError = null; // Debug
 
     // Try providers in rotation order
     for (const currentProvider of orderedProviders) {
@@ -133,7 +134,13 @@ PENTING: Gunakan perbandingan haiwan (harimau, kerbau, elang, kera). Summary MES
         } 
         else if (currentProvider === 'gemini') {
           const result = await callGemini(GEMINI_API_KEY, prompt);
-          if (result) { interpretation = result.interpretation; usage = result.usage; provider = 'gemini'; }
+          if (result) { 
+            interpretation = result.interpretation; 
+            usage = result.usage; 
+            provider = 'gemini'; 
+          } else {
+            geminiError = result?.error || 'returned null';
+          }
         }
         else if (currentProvider === 'openai') {
           const result = await callOpenAI(OPENAI_API_KEY, prompt);
@@ -143,6 +150,7 @@ PENTING: Gunakan perbandingan haiwan (harimau, kerbau, elang, kera). Summary MES
         if (interpretation) console.log(`${currentProvider} SUCCESS`);
       } catch (err) {
         console.log(`${currentProvider} failed:`, err.message);
+        if (currentProvider === 'gemini') geminiError = err.message;
       }
     }
 
@@ -161,7 +169,7 @@ PENTING: Gunakan perbandingan haiwan (harimau, kerbau, elang, kera). Summary MES
         langConfig: lang,
         usage,
         provider,
-        debug: { availableProviders, orderedProviders }
+        debug: { availableProviders, orderedProviders, geminiError }
       })
     };
 
@@ -221,7 +229,7 @@ async function callGemini(apiKey, prompt) {
   if (!response.ok) {
     const errorText = await response.text();
     console.log('Gemini API error:', response.status, errorText);
-    return null;
+    throw new Error(`Gemini ${response.status}: ${errorText.substring(0, 200)}`);
   }
   
   const data = await response.json();
@@ -231,13 +239,13 @@ async function callGemini(apiKey, prompt) {
   
   if (!content) {
     console.log('Gemini no content in response');
-    return null;
+    throw new Error('Gemini: No content in response');
   }
   
   const jsonMatch = content.match(/\{[\s\S]*\}/);
   if (!jsonMatch) {
     console.log('Gemini no JSON found in response');
-    return null;
+    throw new Error('Gemini: No JSON in response');
   }
   
   return {
