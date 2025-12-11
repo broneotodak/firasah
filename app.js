@@ -202,12 +202,15 @@ async function checkPredictionStatus(predictionId) {
 // Get Kitab Firasat interpretation from OpenAI
 async function getKitabFirasatInterpretation(llavaAnalysis) {
     try {
+        // Get selected language
+        const language = document.getElementById('language-select')?.value || 'my';
+        
         const response = await fetch('/.netlify/functions/interpret-character', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ llavaAnalysis })
+            body: JSON.stringify({ llavaAnalysis, language })
         });
         
         if (!response.ok) {
@@ -221,7 +224,7 @@ async function getKitabFirasatInterpretation(llavaAnalysis) {
         
         const data = await response.json();
         hideLoading();
-        displayKitabFirasatResults(data.interpretation, data.source);
+        displayKitabFirasatResults(data.interpretation, data.source, data.langConfig);
         
     } catch (error) {
         console.error('Error getting interpretation:', error);
@@ -335,10 +338,18 @@ function displayResults(analysis) {
     resultsDiv.style.display = 'block';
 }
 
-// Display Kitab Firasat Results in Bahasa Melayu
-function displayKitabFirasatResults(interpretation, source) {
+// Display Kitab Firasat Results with language support
+function displayKitabFirasatResults(interpretation, source, langConfig) {
     const resultsDiv = document.getElementById('analysis-results');
     const resultsContent = document.getElementById('results-content');
+    
+    // Default labels if langConfig not provided
+    const labels = langConfig || {
+        summaryLabel: 'Character Summary',
+        positiveLabel: 'Positive Traits',
+        negativeLabel: 'Traits to Watch',
+        personalityLabel: 'Personality Type'
+    };
     
     const featureIcons = {
         'dahi': '👁️', 'kening': '🤨', 'mata': '👀', 'hidung': '👃',
@@ -347,17 +358,17 @@ function displayKitabFirasatResults(interpretation, source) {
     };
     
     const featureNames = {
-        'dahi': 'Dahi', 'kening': 'Kening', 'mata': 'Mata', 'hidung': 'Hidung',
-        'mulut_bibir': 'Mulut & Bibir', 'bentuk_wajah': 'Bentuk Wajah',
-        'rahang_dagu': 'Rahang & Dagu', 'pipi': 'Pipi', 'telinga': 'Telinga',
-        'garis_rambut': 'Garis Rambut'
+        'dahi': 'Dahi / Forehead', 'kening': 'Kening / Eyebrows', 'mata': 'Mata / Eyes', 
+        'hidung': 'Hidung / Nose', 'mulut_bibir': 'Mulut & Bibir / Lips & Mouth', 
+        'bentuk_wajah': 'Bentuk Wajah / Face Shape', 'rahang_dagu': 'Rahang & Dagu / Jawline & Chin', 
+        'pipi': 'Pipi / Cheeks', 'telinga': 'Telinga / Ears', 'garis_rambut': 'Garis Rambut / Hairline'
     };
 
     let html = `
         <div style="text-align: center; margin-bottom: 25px;">
-            <h3 style="color: #9D4EDD; margin-bottom: 5px;">📖 Analisis Firasat</h3>
+            <h3 style="color: #9D4EDD; margin-bottom: 5px;">📖 Firasah Analysis</h3>
             <p style="color: #E0AAFF; font-size: 0.9em;">
-                Berdasarkan ${source.title} oleh ${source.author} (${source.period})
+                ${source.title} - ${source.author} (${source.period})
             </p>
         </div>
     `;
@@ -368,24 +379,26 @@ function displayKitabFirasatResults(interpretation, source) {
         html += `
             <div style="background: linear-gradient(135deg, rgba(157,78,221,0.2), rgba(199,125,255,0.1)); 
                         padding: 25px; border-radius: 15px; margin-bottom: 25px; border: 1px solid rgba(157,78,221,0.3);">
-                <h4 style="color: #C77DFF; margin-bottom: 15px;">🎯 Ringkasan Karakter</h4>
-                <p style="color: #fff; line-height: 1.7; margin-bottom: 15px;">${ci.overall_summary}</p>
-                <div style="display: flex; gap: 20px; flex-wrap: wrap;">
-                    <div style="flex: 1; min-width: 200px;">
-                        <h5 style="color: #4CAF50; margin-bottom: 10px;">✨ Sifat Positif</h5>
-                        <ul style="color: #eee; margin: 0; padding-left: 20px;">
+                <h4 style="color: #C77DFF; margin-bottom: 15px;">🎯 ${labels.summaryLabel}</h4>
+                <p style="color: #fff; line-height: 1.8; margin-bottom: 20px; font-size: 1.05em;">${ci.overall_summary}</p>
+                
+                <div style="display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 15px;">
+                    <div style="flex: 1; min-width: 250px; background: rgba(76,175,80,0.1); padding: 15px; border-radius: 10px;">
+                        <h5 style="color: #4CAF50; margin-bottom: 12px;">✨ ${labels.positiveLabel}</h5>
+                        <ul style="color: #eee; margin: 0; padding-left: 20px; line-height: 1.8;">
                             ${ci.positive_traits.map(t => `<li>${t}</li>`).join('')}
                         </ul>
                     </div>
-                    <div style="flex: 1; min-width: 200px;">
-                        <h5 style="color: #FF9800; margin-bottom: 10px;">⚠️ Sifat Perlu Diperhatikan</h5>
-                        <ul style="color: #eee; margin: 0; padding-left: 20px;">
+                    <div style="flex: 1; min-width: 250px; background: rgba(255,152,0,0.1); padding: 15px; border-radius: 10px;">
+                        <h5 style="color: #FF9800; margin-bottom: 12px;">⚠️ ${labels.negativeLabel}</h5>
+                        <ul style="color: #eee; margin: 0; padding-left: 20px; line-height: 1.8;">
                             ${ci.negative_traits.map(t => `<li>${t}</li>`).join('')}
                         </ul>
                     </div>
                 </div>
-                <p style="color: #E0AAFF; margin-top: 15px; font-style: italic;">
-                    Jenis Kepribadian: <strong>${ci.personality_type}</strong>
+                
+                <p style="color: #E0AAFF; font-style: italic; background: rgba(157,78,221,0.1); padding: 10px 15px; border-radius: 8px;">
+                    <strong>${labels.personalityLabel}:</strong> ${ci.personality_type}
                 </p>
             </div>
         `;
