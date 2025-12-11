@@ -181,8 +181,14 @@ async function checkPredictionStatus(predictionId) {
         const data = await response.json();
         
         if (data.status === 'completed' && data.success) {
-            // Now get the Kitab Firasat interpretation
-            showLoading('Menterjemah ke Bahasa Melayu dan mentafsir karakter...');
+            // Get selected language for loading message
+            const language = document.getElementById('language-select')?.value || 'my';
+            const loadingMessages = {
+                'my': 'Menterjemah ke Bahasa Melayu dan mentafsir karakter...',
+                'en': 'Translating and interpreting character...',
+                'id': 'Menerjemahkan dan menafsirkan karakter...'
+            };
+            showLoading(loadingMessages[language] || loadingMessages['my']);
             await getKitabFirasatInterpretation(data.analysis);
         } else if (data.status === 'processing' || data.status === 'starting') {
             // Check again in 2 seconds
@@ -465,8 +471,20 @@ function showLoading(text) {
     
     // Show scanning overlay on image
     const scanOverlay = document.getElementById('scan-overlay');
+    const scanText = document.getElementById('scan-text');
     if (scanOverlay) {
         scanOverlay.style.display = 'flex';
+        
+        // Update scan text based on language
+        if (scanText) {
+            const language = document.getElementById('language-select')?.value || 'my';
+            const scanMessages = {
+                'my': 'Menganalisis ciri-ciri wajah...',
+                'en': 'Analyzing facial features...',
+                'id': 'Menganalisis ciri-ciri wajah...'
+            };
+            scanText.textContent = scanMessages[language] || scanMessages['en'];
+        }
     }
 }
 
