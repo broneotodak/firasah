@@ -203,28 +203,41 @@ async function callClaude(apiKey, prompt) {
 
 // Gemini API (Google)
 async function callGemini(apiKey, prompt) {
-  const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+  
+  const response = await fetch(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       contents: [{ parts: [{ text: prompt }] }],
       generationConfig: {
         temperature: 0.7,
-        maxOutputTokens: 2500,
-        responseMimeType: "application/json"
+        maxOutputTokens: 2500
       }
     })
   });
 
-  if (!response.ok) return null;
+  if (!response.ok) {
+    const errorText = await response.text();
+    console.log('Gemini API error:', response.status, errorText);
+    return null;
+  }
   
   const data = await response.json();
+  console.log('Gemini response received');
+  
   const content = data.candidates?.[0]?.content?.parts?.[0]?.text;
   
-  if (!content) return null;
+  if (!content) {
+    console.log('Gemini no content in response');
+    return null;
+  }
   
   const jsonMatch = content.match(/\{[\s\S]*\}/);
-  if (!jsonMatch) return null;
+  if (!jsonMatch) {
+    console.log('Gemini no JSON found in response');
+    return null;
+  }
   
   return {
     interpretation: JSON.parse(jsonMatch[0]),
