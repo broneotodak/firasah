@@ -192,6 +192,7 @@ async function callClaude(apiKey, prompt) {
     body: JSON.stringify({
       model: 'claude-3-haiku-20240307',
       max_tokens: 2500,
+      temperature: 0.2,  // Low temperature for consistency
       messages: [{ role: 'user', content: prompt }]
     })
   });
@@ -223,7 +224,7 @@ async function callGemini(apiKey, prompt) {
     body: JSON.stringify({
       contents: [{ parts: [{ text: prompt }] }],
       generationConfig: {
-        temperature: 0.7,
+        temperature: 0.2,  // Low temperature for consistency
         maxOutputTokens: 2500
       }
     })
@@ -271,7 +272,7 @@ async function callOpenAI(apiKey, prompt) {
     body: JSON.stringify({
       model: 'gpt-4o-mini',
       messages: [{ role: 'user', content: prompt }],
-      temperature: 0.7,
+      temperature: 0.2,  // Low temperature for consistency
       max_tokens: 2500,
       response_format: { type: "json_object" }
     })
