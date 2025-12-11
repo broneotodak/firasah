@@ -155,9 +155,9 @@ INGAT:
 - Jadikan ia peribadi dan menarik
 - Gunakan istilah Arab yang sesuai`;
 
-    // OpenAI API call with 20 second timeout (Netlify Pro allows 26s)
+    // OpenAI API call with 24 second timeout (Netlify Pro allows 26s)
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 20000);
+    const timeoutId = setTimeout(() => controller.abort(), 24000);
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
@@ -172,7 +172,7 @@ INGAT:
           { role: 'user', content: userPrompt }
         ],
         temperature: 0.7,
-        max_tokens: 3000,
+        max_tokens: 2500,
         response_format: { type: "json_object" }
       }),
       signal: controller.signal
