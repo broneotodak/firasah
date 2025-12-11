@@ -616,3 +616,253 @@ body.dark-theme .language-selector select {
 .upload-area {
     position: relative;
 }
+
+
+/* ============================================
+   FIRASAH RESULTS - Light/Dark Mode Compatible
+   ============================================ */
+
+/* Results Header */
+.firasah-header {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.firasah-header h3 {
+    color: var(--primary-color);
+    margin-bottom: 5px;
+}
+
+.firasah-header .source {
+    color: var(--text-secondary);
+    font-size: 0.9em;
+}
+
+/* Character Summary Card */
+.character-summary-card {
+    background: linear-gradient(135deg, rgba(107, 91, 149, 0.1), rgba(136, 117, 170, 0.05));
+    padding: 25px;
+    border-radius: 15px;
+    margin-bottom: 25px;
+    border: 1px solid var(--border);
+}
+
+.character-summary-card h4 {
+    color: var(--primary-color);
+    margin-bottom: 15px;
+}
+
+.character-summary-card .summary-text {
+    color: var(--text-primary);
+    line-height: 1.8;
+    margin-bottom: 20px;
+    font-size: 1.05em;
+}
+
+/* Traits Container */
+.traits-container {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
+}
+
+/* Positive Traits Box */
+.traits-box-positive {
+    flex: 1;
+    min-width: 250px;
+    background: rgba(76, 175, 80, 0.1);
+    padding: 15px;
+    border-radius: 10px;
+    border: 1px solid rgba(76, 175, 80, 0.3);
+}
+
+.traits-box-positive h5 {
+    color: #2E7D32;
+    margin-bottom: 12px;
+}
+
+.traits-box-positive ul {
+    color: var(--text-primary);
+    margin: 0;
+    padding-left: 20px;
+    line-height: 1.8;
+}
+
+.traits-box-positive li {
+    margin-bottom: 6px;
+}
+
+/* Negative Traits Box */
+.traits-box-negative {
+    flex: 1;
+    min-width: 250px;
+    background: rgba(255, 152, 0, 0.1);
+    padding: 15px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 152, 0, 0.3);
+}
+
+.traits-box-negative h5 {
+    color: #E65100;
+    margin-bottom: 12px;
+}
+
+.traits-box-negative ul {
+    color: var(--text-primary);
+    margin: 0;
+    padding-left: 20px;
+    line-height: 1.8;
+}
+
+.traits-box-negative li {
+    margin-bottom: 6px;
+}
+
+/* Personality Type */
+.personality-type {
+    color: var(--primary-color);
+    font-style: italic;
+    background: rgba(107, 91, 149, 0.1);
+    padding: 10px 15px;
+    border-radius: 8px;
+    border-left: 3px solid var(--primary-color);
+}
+
+/* Feature Cards */
+.feature-card {
+    margin-bottom: 12px;
+    padding: 18px;
+    background: rgba(107, 91, 149, 0.08);
+    border-radius: 10px;
+    border-left: 4px solid var(--primary-color);
+}
+
+.feature-card h5 {
+    color: var(--primary-color);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.feature-card .arabic-term {
+    color: var(--primary-light);
+    font-size: 1.1em;
+}
+
+.feature-card p {
+    color: var(--text-primary);
+    line-height: 1.6;
+}
+
+/* Kitab References */
+.kitab-references {
+    margin-top: 25px;
+    padding: 20px;
+    background: rgba(107, 91, 149, 0.05);
+    border-radius: 10px;
+    border: 1px solid var(--border);
+}
+
+.kitab-references h4 {
+    color: var(--primary-color);
+    margin-bottom: 15px;
+}
+
+.kitab-reference-item {
+    margin-bottom: 12px;
+    padding: 12px;
+    background: var(--surface);
+    border-radius: 8px;
+    border: 1px solid var(--border-light);
+}
+
+.kitab-reference-item strong {
+    color: var(--primary-color);
+}
+
+.kitab-reference-item .arabic {
+    color: var(--primary-light);
+}
+
+.kitab-reference-item .quote {
+    color: var(--text-secondary);
+    font-style: italic;
+    margin: 8px 0;
+    line-height: 1.6;
+}
+
+.kitab-reference-item .source {
+    color: var(--text-light);
+    font-size: 0.85em;
+}
+
+/* Disclaimer */
+.firasah-disclaimer {
+    margin-top: 25px;
+    padding: 15px;
+    background: rgba(255, 152, 0, 0.1);
+    border-radius: 10px;
+    border-left: 4px solid var(--warning);
+    text-align: center;
+}
+
+.firasah-disclaimer p {
+    color: var(--text-secondary);
+    font-size: 0.9em;
+}
+
+/* Section Header */
+.section-header {
+    color: var(--primary-color);
+    margin: 20px 0 15px;
+}
+
+/* ============================================
+   DARK MODE SUPPORT
+   ============================================ */
+
+body.dark-mode {
+    --background: #1a1a2e;
+    --surface: #25253a;
+    --surface-light: #2d2d44;
+    --surface-hover: #353550;
+    --text-primary: #f0f0f5;
+    --text-secondary: #b0b0c0;
+    --text-light: #808090;
+    --border: #3a3a50;
+    --border-light: #2d2d44;
+    --primary-color: #9D4EDD;
+    --primary-light: #C77DFF;
+    --primary-dark: #7B2CBF;
+}
+
+body.dark-mode .traits-box-positive {
+    background: rgba(76, 175, 80, 0.15);
+}
+
+body.dark-mode .traits-box-positive h5 {
+    color: #81C784;
+}
+
+body.dark-mode .traits-box-negative {
+    background: rgba(255, 152, 0, 0.15);
+}
+
+body.dark-mode .traits-box-negative h5 {
+    color: #FFB74D;
+}
+
+body.dark-mode .kitab-reference-item {
+    background: var(--surface-light);
+}
+
+body.dark-mode .firasah-disclaimer {
+    background: rgba(255, 152, 0, 0.15);
+}
+
+body.dark-mode .firasah-disclaimer p {
+    color: #FFB74D;
+}

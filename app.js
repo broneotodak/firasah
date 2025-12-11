@@ -371,11 +371,9 @@ function displayKitabFirasatResults(interpretation, source, langConfig) {
     };
 
     let html = `
-        <div style="text-align: center; margin-bottom: 25px;">
-            <h3 style="color: #9D4EDD; margin-bottom: 5px;">📖 Firasah Analysis <span style="font-size: 0.9em; color: #E0AAFF;">(${source.arabic || 'الفراسة'})</span></h3>
-            <p style="color: #E0AAFF; font-size: 0.9em;">
-                ${source.title} - ${source.author} (${source.period})
-            </p>
+        <div class="firasah-header">
+            <h3>📖 Firasah Analysis <span class="arabic-term">(${source.arabic || 'الفراسة'})</span></h3>
+            <p class="source">${source.title} - ${source.author} (${source.period})</p>
         </div>
     `;
     
@@ -383,35 +381,34 @@ function displayKitabFirasatResults(interpretation, source, langConfig) {
     if (interpretation.character_interpretation) {
         const ci = interpretation.character_interpretation;
         html += `
-            <div style="background: linear-gradient(135deg, rgba(157,78,221,0.2), rgba(199,125,255,0.1)); 
-                        padding: 25px; border-radius: 15px; margin-bottom: 25px; border: 1px solid rgba(157,78,221,0.3);">
-                <h4 style="color: #C77DFF; margin-bottom: 15px;">🎯 ${labels.summaryLabel}</h4>
-                <p style="color: #fff; line-height: 1.8; margin-bottom: 20px; font-size: 1.05em;">${ci.overall_summary}</p>
+            <div class="character-summary-card">
+                <h4>🎯 ${labels.summaryLabel || 'Character Summary'}</h4>
+                <p class="summary-text">${ci.overall_summary || ''}</p>
                 
-                <div style="display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 15px;">
-                    <div style="flex: 1; min-width: 250px; background: rgba(76,175,80,0.1); padding: 15px; border-radius: 10px;">
-                        <h5 style="color: #4CAF50; margin-bottom: 12px;">✨ ${labels.positiveLabel}</h5>
-                        <ul style="color: #eee; margin: 0; padding-left: 20px; line-height: 1.8;">
-                            ${ci.positive_traits.map(t => `<li>${t}</li>`).join('')}
+                <div class="traits-container">
+                    <div class="traits-box-positive">
+                        <h5>✨ ${labels.positiveLabel || 'Positive Traits'}</h5>
+                        <ul>
+                            ${(ci.positive_traits || []).map(t => `<li>${t}</li>`).join('')}
                         </ul>
                     </div>
-                    <div style="flex: 1; min-width: 250px; background: rgba(255,152,0,0.1); padding: 15px; border-radius: 10px;">
-                        <h5 style="color: #FF9800; margin-bottom: 12px;">⚠️ ${labels.negativeLabel}</h5>
-                        <ul style="color: #eee; margin: 0; padding-left: 20px; line-height: 1.8;">
-                            ${ci.negative_traits.map(t => `<li>${t}</li>`).join('')}
+                    <div class="traits-box-negative">
+                        <h5>⚠️ ${labels.negativeLabel || 'Traits to Watch'}</h5>
+                        <ul>
+                            ${(ci.negative_traits || []).map(t => `<li>${t}</li>`).join('')}
                         </ul>
                     </div>
                 </div>
                 
-                <p style="color: #E0AAFF; font-style: italic; background: rgba(157,78,221,0.1); padding: 10px 15px; border-radius: 8px;">
-                    <strong>${labels.personalityLabel}:</strong> ${ci.personality_type}
+                <p class="personality-type">
+                    <strong>${labels.personalityLabel || 'Personality Type'}:</strong> ${ci.personality_type || ''}
                 </p>
             </div>
         `;
     }
     
     // Feature Cards
-    html += '<h4 style="color: #C77DFF; margin: 20px 0 15px;">📋 Analisis Ciri-ciri Wajah</h4>';
+    html += '<h4 class="section-header">📋 Analisis Ciri-ciri Wajah</h4>';
     
     if (interpretation.translated_features) {
         for (const [key, feature] of Object.entries(interpretation.translated_features)) {
@@ -419,14 +416,13 @@ function displayKitabFirasatResults(interpretation, source, langConfig) {
             const name = featureNames[key] || key;
             const arabicTerm = feature.arabic || '';
             html += `
-                <div class="result-card" style="margin-bottom: 12px; padding: 18px; 
-                     background: rgba(157, 78, 221, 0.1); border-radius: 10px; border-left: 4px solid #9D4EDD;">
-                    <h5 style="color: #C77DFF; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                <div class="feature-card">
+                    <h5>
                         <span style="font-size: 1.3em;">${icon}</span> 
                         <span>${name}</span>
-                        ${arabicTerm ? `<span style="color: #E0AAFF; font-size: 1.1em; font-family: 'Arial', sans-serif;">(${arabicTerm})</span>` : ''}
+                        ${arabicTerm ? `<span class="arabic-term">(${arabicTerm})</span>` : ''}
                     </h5>
-                    <p style="color: #fff; line-height: 1.6;">${feature.description}</p>
+                    <p>${feature.description || ''}</p>
                 </div>
             `;
         }
@@ -435,13 +431,13 @@ function displayKitabFirasatResults(interpretation, source, langConfig) {
     // Kitab References
     if (interpretation.kitab_references && interpretation.kitab_references.length > 0) {
         html += `
-            <div style="margin-top: 25px; padding: 20px; background: rgba(157, 78, 221, 0.05); border-radius: 10px;">
-                <h4 style="color: #C77DFF; margin-bottom: 15px;">📚 Rujukan Kitab Firasat</h4>
+            <div class="kitab-references">
+                <h4>📚 Rujukan Kitab Firasat</h4>
                 ${interpretation.kitab_references.map(ref => `
-                    <div style="margin-bottom: 12px; padding: 12px; background: rgba(0,0,0,0.2); border-radius: 8px;">
-                        <strong style="color: #E0AAFF;">${ref.feature} ${ref.arabic_term ? `<span style="color: #C77DFF;">(${ref.arabic_term})</span>` : ''}</strong>
-                        <p style="color: #ccc; font-style: italic; margin: 8px 0; line-height: 1.6;">"${ref.quote}"</p>
-                        <small style="color: #888;">— ${ref.source}</small>
+                    <div class="kitab-reference-item">
+                        <strong>${ref.feature || ''} ${ref.arabic_term ? `<span class="arabic">(${ref.arabic_term})</span>` : ''}</strong>
+                        <p class="quote">"${ref.quote || ''}"</p>
+                        ${ref.source ? `<small class="source">— ${ref.source}</small>` : ''}
                     </div>
                 `).join('')}
             </div>
@@ -450,11 +446,8 @@ function displayKitabFirasatResults(interpretation, source, langConfig) {
     
     // Disclaimer
     html += `
-        <div style="margin-top: 25px; padding: 15px; background: rgba(255,152,0,0.1); 
-                    border-radius: 10px; border-left: 4px solid #FF9800; text-align: center;">
-            <p style="color: #FFB74D; font-size: 0.9em;">
-                ⚠️ ${interpretation.disclaimer || 'Tafsiran ini berdasarkan ilmu firasat klasik dan bukan ramalan mutlak. Karakter seseorang boleh berubah dan dipengaruhi oleh banyak faktor.'}
-            </p>
+        <div class="firasah-disclaimer">
+            <p>⚠️ ${interpretation.disclaimer || 'Tafsiran ini berdasarkan ilmu firasat klasik dan bukan ramalan mutlak. Karakter seseorang boleh berubah dan dipengaruhi oleh banyak faktor.'}</p>
         </div>
     `;
     
