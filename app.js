@@ -366,7 +366,7 @@ function displayKitabFirasatResults(interpretation, source, langConfig) {
 
     let html = `
         <div style="text-align: center; margin-bottom: 25px;">
-            <h3 style="color: #9D4EDD; margin-bottom: 5px;">📖 Firasah Analysis</h3>
+            <h3 style="color: #9D4EDD; margin-bottom: 5px;">📖 Firasah Analysis <span style="font-size: 0.9em; color: #E0AAFF;">(${source.arabic || 'الفراسة'})</span></h3>
             <p style="color: #E0AAFF; font-size: 0.9em;">
                 ${source.title} - ${source.author} (${source.period})
             </p>
@@ -411,11 +411,14 @@ function displayKitabFirasatResults(interpretation, source, langConfig) {
         for (const [key, feature] of Object.entries(interpretation.translated_features)) {
             const icon = featureIcons[key] || '📝';
             const name = featureNames[key] || key;
+            const arabicTerm = feature.arabic || '';
             html += `
                 <div class="result-card" style="margin-bottom: 12px; padding: 18px; 
                      background: rgba(157, 78, 221, 0.1); border-radius: 10px; border-left: 4px solid #9D4EDD;">
-                    <h5 style="color: #C77DFF; margin-bottom: 8px; display: flex; align-items: center; gap: 8px;">
-                        <span style="font-size: 1.3em;">${icon}</span> ${name}
+                    <h5 style="color: #C77DFF; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                        <span style="font-size: 1.3em;">${icon}</span> 
+                        <span>${name}</span>
+                        ${arabicTerm ? `<span style="color: #E0AAFF; font-size: 1.1em; font-family: 'Arial', sans-serif;">(${arabicTerm})</span>` : ''}
                     </h5>
                     <p style="color: #fff; line-height: 1.6;">${feature.description}</p>
                 </div>
@@ -429,9 +432,9 @@ function displayKitabFirasatResults(interpretation, source, langConfig) {
             <div style="margin-top: 25px; padding: 20px; background: rgba(157, 78, 221, 0.05); border-radius: 10px;">
                 <h4 style="color: #C77DFF; margin-bottom: 15px;">📚 Rujukan Kitab Firasat</h4>
                 ${interpretation.kitab_references.map(ref => `
-                    <div style="margin-bottom: 12px; padding: 10px; background: rgba(0,0,0,0.2); border-radius: 8px;">
-                        <strong style="color: #E0AAFF;">${ref.feature}:</strong>
-                        <p style="color: #ccc; font-style: italic; margin: 5px 0;">"${ref.quote}"</p>
+                    <div style="margin-bottom: 12px; padding: 12px; background: rgba(0,0,0,0.2); border-radius: 8px;">
+                        <strong style="color: #E0AAFF;">${ref.feature} ${ref.arabic_term ? `<span style="color: #C77DFF;">(${ref.arabic_term})</span>` : ''}</strong>
+                        <p style="color: #ccc; font-style: italic; margin: 8px 0; line-height: 1.6;">"${ref.quote}"</p>
                         <small style="color: #888;">— ${ref.source}</small>
                     </div>
                 `).join('')}
@@ -459,10 +462,22 @@ function showLoading(text) {
     const loadingText = document.getElementById('loading-text');
     loadingText.textContent = text;
     modal.style.display = 'flex';
+    
+    // Show scanning overlay on image
+    const scanOverlay = document.getElementById('scan-overlay');
+    if (scanOverlay) {
+        scanOverlay.style.display = 'flex';
+    }
 }
 
 function hideLoading() {
     document.getElementById('loading-modal').style.display = 'none';
+    
+    // Hide scanning overlay
+    const scanOverlay = document.getElementById('scan-overlay');
+    if (scanOverlay) {
+        scanOverlay.style.display = 'none';
+    }
 }
 
 // Export function

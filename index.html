@@ -71,13 +71,33 @@
                             <button class="btn btn-primary" onclick="event.stopPropagation(); document.getElementById('file-input').click()">
                                 Choose Photo
                             </button>
+                            <div class="photo-tips">
+                                <p><i class="fas fa-info-circle"></i> <strong>Tips for best results:</strong></p>
+                                <ul>
+                                    <li>📸 Use a clear, front-facing photo (like passport photo)</li>
+                                    <li>💡 Good lighting on face</li>
+                                    <li>👤 Full face visible (forehead to chin)</li>
+                                    <li>🚫 Avoid sunglasses or face coverings</li>
+                                </ul>
+                            </div>
                         </div>
                         <img id="preview-image" class="preview-image" style="display: none;">
+                        <!-- Scanning overlay -->
+                        <div id="scan-overlay" class="scan-overlay" style="display: none;">
+                            <div class="scan-line"></div>
+                            <div class="scan-corners">
+                                <div class="corner top-left"></div>
+                                <div class="corner top-right"></div>
+                                <div class="corner bottom-left"></div>
+                                <div class="corner bottom-right"></div>
+                            </div>
+                            <div class="scan-text">Analyzing facial features...</div>
+                        </div>
                     </div>
                     
                     <button id="analyze-btn" class="btn btn-primary btn-large" style="display: none;">
                         <i class="fas fa-search"></i>
-                        Develop Character
+                        Analyze Character
                     </button>
                 </div>
 
