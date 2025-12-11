@@ -1,0 +1,608 @@
+{
+  "source": {
+    "title": "Kitab Firasat",
+    "author": "Imam Fakhruddin ar-Razi",
+    "period": "1150-1210 M",
+    "arabic_title": "Al-Firâsah: Dahluka ila Ma'rifah Akhlaq an-Nas wa Thabai'ihim",
+    "description": "Ilmu Membaca Sifat dan Karakter Orang dari Bentuk Tubuhnya"
+  },
+  "features": {
+    "forehead": {
+      "arabic": "الجبهة",
+      "malay": "Dahi",
+      "variations": [
+        {
+          "physical": "Wrinkled and flat forehead",
+          "physical_malay": "Dahi berkerut dan cenderung rata",
+          "traits": ["angry", "hot-tempered"],
+          "traits_malay": ["pemarah", "cepat marah"],
+          "interpretation": "Orang yang dahinya berkerut dan cenderung rata adalah seorang pemarah kerana dahi seorang pemarah memang seperti itu."
+        },
+        {
+          "physical": "Small forehead",
+          "physical_malay": "Dahi kecil",
+          "traits": ["foolish", "weak memory"],
+          "traits_malay": ["bodoh", "lemah ingatan"],
+          "interpretation": "Orang yang berdahi kecil adalah orang bodoh kerana dahi yang kecil menunjukkan bahawa otak bahagian depan berukuran kecil, menyebabkan fungsi memori dan fikiran terganggu."
+        },
+        {
+          "physical": "Large forehead",
+          "physical_malay": "Dahi besar",
+          "traits": ["lazy", "angry"],
+          "traits_malay": ["pemalas", "pemarah"],
+          "interpretation": "Orang yang memiliki dahi besar adalah orang yang pemalas dan pemarah kerana dahi yang besar terbentuk disebabkan terlalu banyaknya bahan di kawasan tersebut."
+        },
+        {
+          "physical": "Many wrinkles on forehead",
+          "physical_malay": "Banyak kerutan di dahi",
+          "traits": ["arrogant", "proud"],
+          "traits_malay": ["congkak", "sombong"],
+          "interpretation": "Orang yang pada dahinya banyak kerutan adalah orang yang congkak."
+        },
+        {
+          "physical": "Flat forehead without wrinkles",
+          "physical_malay": "Dahi rata tanpa kerutan",
+          "traits": ["troublemaker"],
+          "traits_malay": ["pengacau", "pembuat masalah"],
+          "interpretation": "Orang yang dahinya rata tanpa ada kerutan di permukaannya adalah seorang pengacau."
+        }
+      ]
+    },
+    "eyebrows": {
+      "arabic": "الحواجب",
+      "malay": "Kening / Alis",
+      "variations": [
+        {
+          "physical": "Thick eyebrows",
+          "physical_malay": "Kening lebat berbulu",
+          "traits": ["sorrowful", "sad", "poor speech"],
+          "traits_malay": ["sering berduka", "bersedih", "tutur kata buruk"],
+          "interpretation": "Kening yang berbulu lebat dimiliki orang yang sering berduka, bersedih, dan tutur katanya buruk. Hal ini kerana bulu kening terbentuk dari zat asap sehingga banyaknya bulu kening menunjukkan dominasi sifat empedu hitam di dalam otak."
+        },
+        {
+          "physical": "Slanting eyebrows (down from nose, up at temples)",
+          "physical_malay": "Kening miring dari arah hidung ke bawah dan dari arah pelipis ke atas",
+          "traits": ["arrogant", "foolish"],
+          "traits_malay": ["congkak", "dungu"],
+          "interpretation": "Orang yang memiliki kening miring dari arah hidung ke bawah dan dari arah pelipis ke atas adalah orang yang congkak dan dungu."
+        }
+      ]
+    },
+    "eyes": {
+      "arabic": "العينين",
+      "malay": "Mata",
+      "variations": [
+        {
+          "physical": "Large eyes",
+          "physical_malay": "Mata besar",
+          "traits": ["lazy", "slow"],
+          "traits_malay": ["pemalas", "lambat"],
+          "interpretation": "Orang yang memiliki mata berukuran besar adalah seorang pemalas. Petunjuk ini diambil dari kemiripan mata seperti ini dengan mata kerbau. Mata yang besar juga menunjukkan banyaknya zat lembap dalam otak yang menyebabkan kebodohan."
+        },
+        {
+          "physical": "Bulging/protruding eyes",
+          "physical_malay": "Mata melotot/menonjol",
+          "traits": ["foolish", "talkative"],
+          "traits_malay": ["bodoh", "banyak mulut"],
+          "interpretation": "Orang yang memiliki mata melotot adalah orang bodoh dan banyak mulut. Petunjuk ini diambil dari kemiripan posisi mata seperti ini dengan mata keledai."
+        },
+        {
+          "physical": "Sunken/deep-set eyes",
+          "physical_malay": "Mata cekung",
+          "traits": ["evil", "cunning"],
+          "traits_malay": ["jahat", "licik"],
+          "interpretation": "Orang yang memiliki mata cekung adalah orang jahat. Petunjuk ini diambil dari kemiripan posisi mata seperti ini dengan mata kera."
+        },
+        {
+          "physical": "Slightly deep-set eyes",
+          "physical_malay": "Mata agak cekung ke dalam",
+          "traits": ["good soul", "noble"],
+          "traits_malay": ["jiwa baik", "mulia"],
+          "interpretation": "Orang yang memiliki mata agak cekung ke dalam memiliki jiwa yang baik. Petunjuk ini diambil dari kemiripan posisi mata seperti ini dengan mata harimau."
+        },
+        {
+          "physical": "Very dark/black eyes",
+          "physical_malay": "Mata yang bahagian hitamnya terlalu hitam",
+          "traits": ["cowardly", "fearful"],
+          "traits_malay": ["penakut", "pengecut"],
+          "interpretation": "Orang yang memiliki mata yang bahagian hitamnya terlalu hitam adalah seorang penakut kerana hitam adalah warna yang menunjukkan ketakutan."
+        },
+        {
+          "physical": "Red eyes like embers",
+          "physical_malay": "Mata berwarna merah seperti bara",
+          "traits": ["angry", "hot-tempered"],
+          "traits_malay": ["pemarah", "cepat marah"],
+          "interpretation": "Mata yang berwarna merah seperti bara menunjukkan orang yang memilikinya adalah seorang pemarah kerana mata manusia di saat marah selalu berwarna merah."
+        },
+        {
+          "physical": "Blue or white eyes",
+          "physical_malay": "Mata berwarna biru atau putih",
+          "traits": ["cowardly"],
+          "traits_malay": ["penakut"],
+          "interpretation": "Mata yang berwarna biru atau putih menunjukkan bahawa pemiliknya adalah seorang penakut kerana warna putih menunjukkan dominasi cairan mukus."
+        },
+        {
+          "physical": "Clear/transparent colored eyes",
+          "physical_malay": "Mata berwarna seperti minuman yang jernih",
+          "traits": ["foolish"],
+          "traits_malay": ["bodoh"],
+          "interpretation": "Orang yang memiliki mata berwarna seperti minuman yang jernih adalah orang bodoh. Petunjuk ini diambil berdasarkan warna mata domba."
+        },
+        {
+          "physical": "Yellow eyes",
+          "physical_malay": "Mata berwarna kuning",
+          "traits": ["cowardly"],
+          "traits_malay": ["pengecut"],
+          "interpretation": "Orang yang memiliki mata berwarna kuning adalah seorang pengecut. Petunjuk ini diambil berdasarkan mata manusia yang sedang ketakutan."
+        },
+        {
+          "physical": "Blue eyes with yellow tint",
+          "physical_malay": "Mata berwarna biru dengan warna kuning di tengah",
+          "traits": ["bad character"],
+          "traits_malay": ["akhlak buruk"],
+          "interpretation": "Orang yang memiliki mata berwarna biru dengan warna kuning di tengah menunjukkan akhlak yang buruk kerana warna biru menunjukkan kebodohan dan kemalasan, sementara warna kuning menunjukkan rasa kecut dan takut."
+        },
+        {
+          "physical": "Fast-moving, sharp eyes",
+          "physical_malay": "Mata bergerak cepat dan tajam",
+          "traits": ["deceiver", "liar", "thief"],
+          "traits_malay": ["pembuat makar", "penipu", "pencuri"],
+          "interpretation": "Orang yang matanya bergerak cepat dan tajam, serta memiliki pandangan tajam, adalah seorang pembuat makar, penipu, dan pencuri."
+        },
+        {
+          "physical": "Slow-moving/fixed eyes",
+          "physical_malay": "Gerakan mata lambat atau kaku",
+          "traits": ["contemplative", "schemer"],
+          "traits_malay": ["banyak berfikir", "perancang"],
+          "interpretation": "Orang yang gerakan matanya lambat atau kaku adalah pribadi yang banyak berfikir dan merancang makar."
+        },
+        {
+          "physical": "Shining and sparkling eyes",
+          "physical_malay": "Mata yang bersinar dan mengilap",
+          "traits": ["lustful", "passionate"],
+          "traits_malay": ["gemar bersetubuh", "bernafsu"],
+          "interpretation": "Orang yang matanya bersinar dan mengilap adalah orang yang gemar bersetubuh. Petunjuk ini diambil berdasarkan mata ayam jantan dan mata burung gagak."
+        },
+        {
+          "physical": "Small, blue, fast-moving eyes",
+          "physical_malay": "Mata kecil dan berwarna biru",
+          "traits": ["shameless", "deceiver", "womanizer"],
+          "traits_malay": ["tidak tahu malu", "penipu", "suka perempuan"],
+          "interpretation": "Mata yang kecil dan berwarna biru menunjukkan bahawa pemiliknya adalah orang yang tidak tahu malu, penipu, dan menyukai perempuan."
+        }
+      ]
+    },
+    "nose": {
+      "arabic": "الأنف",
+      "malay": "Hidung",
+      "variations": [
+        {
+          "physical": "Sharp/pointed nose tip",
+          "physical_malay": "Ujung hidung lancip",
+          "traits": ["loves conflict", "doubtful", "dismissive"],
+          "traits_malay": ["suka permusuhan", "peragu", "suka meremehkan"],
+          "interpretation": "Orang yang memiliki ujung hidung lancip adalah orang yang menyukai permusuhan, peragu, dan suka meremehkan segala hal. Petunjuk ini diambil dari anjing."
+        },
+        {
+          "physical": "Thick upper nose",
+          "physical_malay": "Bahagian atas hidung tebal",
+          "traits": ["dull senses"],
+          "traits_malay": ["kepekaan indra kurang"],
+          "interpretation": "Orang yang bahagian atas hidungnya tebal adalah orang yang kepekaan indranya kurang. Petunjuk ini diambil dari babi."
+        },
+        {
+          "physical": "Thick and full nose",
+          "physical_malay": "Hidung tebal dan penuh",
+          "traits": ["poor understanding"],
+          "traits_malay": ["kurang pemahaman"],
+          "interpretation": "Orang yang memiliki hidung tebal dan penuh adalah orang yang kurang pemahaman. Petunjuk ini diambil dari kerbau."
+        },
+        {
+          "physical": "Flat nose bridge",
+          "physical_malay": "Pangkal hidung pesek",
+          "traits": ["lustful towards women"],
+          "traits_malay": ["besar syahwat terhadap wanita"],
+          "interpretation": "Orang yang pangkal hidungnya pesek adalah orang yang besar syahwatnya terhadap wanita. Petunjuk ini diambil dari unta."
+        },
+        {
+          "physical": "Large nostrils",
+          "physical_malay": "Lubang hidung besar",
+          "traits": ["angry", "hot-tempered"],
+          "traits_malay": ["pemarah", "cepat marah"],
+          "interpretation": "Orang yang hidungnya memiliki lubang besar adalah seorang pemarah. Petunjuk ini diambil dari kemiripan bentuk hidung seperti itu dengan hidung orang yang sedang marah."
+        },
+        {
+          "physical": "Curved nose from forehead",
+          "physical_malay": "Hidung melengkung mulai dari dahi",
+          "traits": ["shameless"],
+          "traits_malay": ["tidak tahu malu"],
+          "interpretation": "Orang yang hidungnya melengkung mulai dari dahi adalah orang yang tidak tahu malu. Petunjuk ini diambil dari burung gagak."
+        },
+        {
+          "physical": "Aquiline/hooked nose",
+          "physical_malay": "Hidung melengkung (mancung)",
+          "traits": ["good soul", "noble"],
+          "traits_malay": ["jiwa baik", "mulia"],
+          "interpretation": "Orang yang hidungnya melengkung (mancung) adalah orang yang jiwanya baik. Petunjuk ini diambil dari burung elang."
+        },
+        {
+          "physical": "Deep nose with round forehead curving upward",
+          "physical_malay": "Hidung dalam dan bahagian dahi bulat dengan lekuk condong ke atas",
+          "traits": ["lustful", "passionate"],
+          "traits_malay": ["nafsu berahi besar", "bernafsu"],
+          "interpretation": "Orang yang hidungnya dalam dan bahagian dahinya bulat disertai dengan lekuk condong ke atas adalah orang yang nafsu berahinya besar. Petunjuk ini diambil dari ayam jantan."
+        }
+      ]
+    },
+    "lips_mouth": {
+      "arabic": "الفم والشفتين",
+      "malay": "Mulut dan Bibir",
+      "variations": [
+        {
+          "physical": "Wide mouth",
+          "physical_malay": "Mulut lebar",
+          "traits": ["lustful", "passionate"],
+          "traits_malay": ["nafsu syahwat besar", "bernafsu"],
+          "interpretation": "Orang yang memiliki mulut lebar adalah orang yang nafsu syahwatnya besar kerana lebarnya celah di tubuh manusia terjadi disebabkan panas. Mulut seperti ini juga mirip dengan mulut harimau."
+        },
+        {
+          "physical": "Thick lips",
+          "physical_malay": "Bibir tebal",
+          "traits": ["foolish", "stubborn"],
+          "traits_malay": ["bodoh", "keras kepala"],
+          "interpretation": "Orang yang berbibir tebal adalah orang bodoh dan berwatak keras, apalagi jika bibirnya menggantung."
+        },
+        {
+          "physical": "Pale lips",
+          "physical_malay": "Bibir pucat",
+          "traits": ["sickly"],
+          "traits_malay": ["sering sakit"],
+          "interpretation": "Orang yang bibirnya pucat adalah orang yang sering sakit."
+        },
+        {
+          "physical": "Thin and soft lips meeting well",
+          "physical_malay": "Bibir tipis dan lemas pada pertemuan keduanya",
+          "traits": ["good soul", "noble"],
+          "traits_malay": ["jiwa baik", "mulia"],
+          "interpretation": "Orang yang kedua bibirnya tipis dan lemas di bahagian pertemuan antara keduanya sehingga bibir atasnya tampak jatuh di atas bibir bawahnya adalah orang yang memiliki jiwa yang baik. Petunjuk ini diambil dari bentuk bibir harimau."
+        },
+        {
+          "physical": "Thin lips at canine area with protruding canines",
+          "physical_malay": "Bibir tipis di bahagian gigi taring dengan taring menyembul",
+          "traits": ["strong"],
+          "traits_malay": ["kuat"],
+          "interpretation": "Orang yang bibirnya tipis pada bahagian gigi taringnya sehingga gigi taringnya menyembul keluar adalah orang yang kuat. Petunjuk ini diambil dari bentuk bibir babi."
+        },
+        {
+          "physical": "Thick lips with upper lip hanging over lower",
+          "physical_malay": "Bibir tebal dengan bibir atas menggantung di atas bibir bawah",
+          "traits": ["foolish"],
+          "traits_malay": ["bodoh"],
+          "interpretation": "Orang yang bibirnya tebal dengan bibir atas menggantung di atas bibir bawah adalah orang yang bodoh. Petunjuk ini diambil dari bentuk bibir keledai dan kera."
+        },
+        {
+          "physical": "Weak and sparse teeth",
+          "physical_malay": "Gigi lemah dan jarang-jarang",
+          "traits": ["weak body"],
+          "traits_malay": ["tubuh lemah"],
+          "interpretation": "Orang yang memiliki gigi lemah dan jarang-jarang adalah orang yang lemah tubuhnya."
+        },
+        {
+          "physical": "Long and strong canine teeth",
+          "physical_malay": "Gigi taring panjang dan kuat",
+          "traits": ["greedy", "evil"],
+          "traits_malay": ["serakah", "jahat"],
+          "interpretation": "Orang yang memiliki gigi taring yang panjang dan kuat adalah orang yang serakah dan jahat."
+        }
+      ]
+    },
+    "face_shape": {
+      "arabic": "الوجه",
+      "malay": "Bentuk Wajah",
+      "variations": [
+        {
+          "physical": "Angry-looking face",
+          "physical_malay": "Wajah seperti orang marah",
+          "traits": ["angry", "hot-tempered"],
+          "traits_malay": ["pemarah", "cepat marah"],
+          "interpretation": "Orang yang memiliki wajah seperti wajah orang marah adalah seorang pemarah."
+        },
+        {
+          "physical": "Fleshy/chubby face",
+          "physical_malay": "Wajah berdaging (gemuk)",
+          "traits": ["lazy", "foolish"],
+          "traits_malay": ["pemalas", "bodoh"],
+          "interpretation": "Orang yang memiliki wajah berdaging (gemuk) adalah seorang pemalas dan bodoh. Petunjuk ini diambil dari bentuk wajah kerbau. Banyaknya daging di wajah juga menunjukkan bahawa urat-urat otak penuh dengan unsur yang pekat."
+        },
+        {
+          "physical": "Fleshy/chubby cheeks",
+          "physical_malay": "Pipi berdaging (gemuk)",
+          "traits": ["stubborn", "hard-headed"],
+          "traits_malay": ["keras kepala", "degil"],
+          "interpretation": "Orang yang pipinya berdaging (gemuk) adalah orang yang berwatak keras. Petunjuk ini diambil dari bentuk pipi unta dan keledai."
+        },
+        {
+          "physical": "Thin face",
+          "physical_malay": "Wajah kurus",
+          "traits": ["meticulous", "careful"],
+          "traits_malay": ["cermat", "teliti"],
+          "interpretation": "Orang yang wajahnya kurus adalah orang yang cermat memperhatikan segala hal kerana banyaknya fikiran pasti memicu terjadinya kekeringan dalam tubuh yang menyebabkan orang tersebut menjadi kurus."
+        },
+        {
+          "physical": "Round face",
+          "physical_malay": "Wajah bundar",
+          "traits": ["foolish", "lowly soul"],
+          "traits_malay": ["bodoh", "jiwa hina"],
+          "interpretation": "Orang yang berwajah bundar adalah orang bodoh dan jiwanya hina. Petunjuk ini diambil dari bentuk wajah kera."
+        },
+        {
+          "physical": "Large face",
+          "physical_malay": "Wajah besar",
+          "traits": ["lazy"],
+          "traits_malay": ["pemalas"],
+          "interpretation": "Orang yang wajahnya besar adalah seorang pemalas. Petunjuk ini diambil dari bentuk wajah kerbau dan keledai."
+        },
+        {
+          "physical": "Small face",
+          "physical_malay": "Wajah kecil",
+          "traits": ["lowly", "manipulative"],
+          "traits_malay": ["hina", "suka merayu"],
+          "interpretation": "Orang yang wajahnya kecil adalah orang yang hina dan busuk serta gemar merayu orang lain atau manja. Petunjuk ini diambil dari bentuk wajah kera."
+        },
+        {
+          "physical": "Ugly face",
+          "physical_malay": "Wajah buruk",
+          "traits": ["bad character"],
+          "traits_malay": ["akhlak buruk"],
+          "interpretation": "Orang yang berwajah buruk biasanya berakhlak buruk kerana kepribadian yang membentuk penampilan lahiriah dan akhlak batiniah adalah sama."
+        },
+        {
+          "physical": "Long face",
+          "physical_malay": "Wajah panjang",
+          "traits": ["shameless"],
+          "traits_malay": ["tidak tahu malu"],
+          "interpretation": "Orang yang berwajah panjang adalah orang yang tidak tahu malu. Petunjuk ini diambil berdasarkan bentuk wajah anjing."
+        },
+        {
+          "physical": "Prominent temples and full throat",
+          "physical_malay": "Pelipis menonjol dan tenggorokan penuh",
+          "traits": ["angry"],
+          "traits_malay": ["pemarah"],
+          "interpretation": "Orang yang pelipisnya menonjol dan tenggorokannya penuh adalah seorang pemarah. Petunjuk ini diambil dari bentuk wajah manusia saat marah."
+        }
+      ]
+    },
+    "jawline_chin": {
+      "arabic": "الذقن",
+      "malay": "Rahang dan Dagu",
+      "variations": [
+        {
+          "physical": "Strong jawline",
+          "physical_malay": "Rahang kuat",
+          "traits": ["determined", "strong-willed"],
+          "traits_malay": ["tegas", "berkemauan kuat"],
+          "interpretation": "Rahang yang kuat menunjukkan ketegasan dan kekuatan tekad."
+        },
+        {
+          "physical": "Large jaw",
+          "physical_malay": "Rahang besar",
+          "traits": ["foolish"],
+          "traits_malay": ["bodoh"],
+          "interpretation": "Orang yang kepalanya besar sekali dengan wajah, leher dan kedua kaki yang gemuk serta rahang yang besar menunjukkan kekurangan dalam kecerdasan."
+        }
+      ]
+    },
+    "ears": {
+      "arabic": "الأذن",
+      "malay": "Telinga",
+      "variations": [
+        {
+          "physical": "Large ears",
+          "physical_malay": "Telinga besar",
+          "traits": ["foolish", "long-lived"],
+          "traits_malay": ["bodoh", "panjang umur"],
+          "interpretation": "Orang yang bertelinga besar adalah orang yang bodoh, tetapi panjang umur. Kesimpulan bahawa telinga besar menunjukkan kebodohan berasal dari kemiripannya dengan bentuk telinga keledai, sedangkan kesimpulan bahawa telinga besar menunjukkan panjang umur disebabkan bentuk telinga seperti itu menunjukkan dominasi sifat kering pada kepribadiannya."
+        }
+      ]
+    },
+    "neck": {
+      "arabic": "العنق",
+      "malay": "Leher",
+      "variations": [
+        {
+          "physical": "Thick/fat neck",
+          "physical_malay": "Leher tebal (gemuk)",
+          "traits": ["strong", "powerful"],
+          "traits_malay": ["kuat", "perkasa"],
+          "interpretation": "Orang yang lehernya tebal (gemuk) adalah orang yang kuat dan perkasa. Petunjuk ini diambil berdasarkan bentuk leher laki-laki."
+        },
+        {
+          "physical": "Thin neck",
+          "physical_malay": "Leher tipis (kurus)",
+          "traits": ["weak"],
+          "traits_malay": ["lemah"],
+          "interpretation": "Orang yang lehernya tipis (kurus) adalah orang yang lemah. Petunjuk ini diambil berdasarkan bentuk leher perempuan."
+        },
+        {
+          "physical": "Thick and full neck",
+          "physical_malay": "Leher tebal (gemuk) dan penuh",
+          "traits": ["angry"],
+          "traits_malay": ["pemarah"],
+          "interpretation": "Orang yang lehernya tebal (gemuk) dan penuh adalah seorang pemarah. Petunjuk ini diambil berdasarkan bentuk leher orang yang sedang marah."
+        },
+        {
+          "physical": "Balanced/medium-sized neck",
+          "physical_malay": "Leher seimbang besarnya (sedang)",
+          "traits": ["good soul"],
+          "traits_malay": ["jiwa baik"],
+          "interpretation": "Orang yang lehernya seimbang besarnya dan tidak terlalu gemuk adalah orang yang berjiwa baik. Petunjuk ini diambil berdasarkan bentuk leher harimau."
+        },
+        {
+          "physical": "Small and long neck",
+          "physical_malay": "Leher kecil dan panjang",
+          "traits": ["cowardly"],
+          "traits_malay": ["penakut"],
+          "interpretation": "Orang yang lehernya kecil dan panjang adalah seorang penakut. Petunjuk ini diambil berdasarkan bentuk leher unta."
+        },
+        {
+          "physical": "Very short neck",
+          "physical_malay": "Leher terlalu pendek",
+          "traits": ["schemer", "cunning"],
+          "traits_malay": ["pembuat tipu daya", "licik"],
+          "interpretation": "Orang yang lehernya terlalu pendek adalah seorang pembuat tipu daya. Petunjuk ini diambil berdasarkan bentuk leher serigala."
+        }
+      ]
+    },
+    "voice": {
+      "arabic": "الصوت",
+      "malay": "Suara",
+      "variations": [
+        {
+          "physical": "Deep and loud voice",
+          "physical_malay": "Suara berat dan lantang",
+          "traits": ["brave", "cunning"],
+          "traits_malay": ["pemberani", "pembuat tipu daya"],
+          "interpretation": "Orang yang bersuara berat dan lantang adalah seorang pemberani dan pembuat tipu daya."
+        },
+        {
+          "physical": "Fast speech",
+          "physical_malay": "Bicara cepat",
+          "traits": ["rash", "narrow-minded"],
+          "traits_malay": ["gegabah", "pemahaman sempit"],
+          "interpretation": "Orang yang bicaranya cepat adalah orang yang gegabah dan berpemahaman sempit."
+        },
+        {
+          "physical": "High and fast speech",
+          "physical_malay": "Bicara tinggi dan cepat",
+          "traits": ["angry", "bad character"],
+          "traits_malay": ["pemarah", "akhlak buruk"],
+          "interpretation": "Orang yang bicaranya tinggi dan cepat adalah orang yang pemarah dan berakhlak buruk."
+        },
+        {
+          "physical": "Slow/soft speech",
+          "physical_malay": "Bicara pelan",
+          "traits": ["patient", "good character"],
+          "traits_malay": ["penyabar", "akhlak mulia"],
+          "interpretation": "Orang yang bicaranya pelan adalah orang penyabar dan berakhlak mulia."
+        },
+        {
+          "physical": "Long breath",
+          "physical_malay": "Napas panjang",
+          "traits": ["ill-intentioned"],
+          "traits_malay": ["niat busuk"],
+          "interpretation": "Orang yang napasnya panjang adalah orang yang memiliki niat busuk."
+        },
+        {
+          "physical": "Beautiful voice",
+          "physical_malay": "Suara indah",
+          "traits": ["foolish", "not clever"],
+          "traits_malay": ["bodoh", "tidak cerdas"],
+          "interpretation": "Orang yang suaranya indah menunjukkan bahawa dia adalah orang bodoh dan tidak cerdas."
+        }
+      ]
+    },
+    "hairline": {
+      "arabic": "الشعر",
+      "malay": "Rambut dan Garis Rambut",
+      "variations": [
+        {
+          "physical": "Thick black hair",
+          "physical_malay": "Rambut tebal hitam",
+          "traits": ["strong vitality"],
+          "traits_malay": ["daya hidup kuat"],
+          "interpretation": "Rambut kepala yang cepat tumbuh, lebat dan berwarna hitam menunjukkan kepribadian sanguinis-choleric (panas-kering) yang kuat."
+        },
+        {
+          "physical": "Balding head",
+          "physical_malay": "Kepala botak",
+          "traits": ["dried temperament"],
+          "traits_malay": ["kepribadian kering"],
+          "interpretation": "Orang yang kepalanya botak lambat laun menunjukkan dominasi sifat kering pada kepribadiannya."
+        },
+        {
+          "physical": "Sparse hair",
+          "physical_malay": "Rambut sedikit",
+          "traits": ["cool temperament"],
+          "traits_malay": ["kepribadian dingin"],
+          "interpretation": "Berambut sedikit dan cenderung pirang menunjukkan kepribadian flegmatis (dingin)."
+        }
+      ]
+    }
+  },
+  "general_principles": [
+    {
+      "principle": "Multiple indicators strengthen conclusions",
+      "malay": "Semakin banyak petunjuk yang cocok dengan suatu keadaan, semakin mendekati kepastian kesimpulannya",
+      "explanation": "Para pengguna ilmu firasat hendaknya tidak menggunakan satu atau dua petunjuk saja, tetapi harus mempertimbangkan semua sisi."
+    },
+    {
+      "principle": "Head indicators are strongest",
+      "malay": "Petunjuk dari kepala adalah yang terkuat",
+      "explanation": "Petunjuk mengenai berbagai kondisi psikis yang muncul di daerah kepala jauh lebih kuat daripada semua petunjuk yang muncul dari organ tubuh lainnya kerana kepala adalah tempat otak yang menjadi sumber fikiran dan ingatan."
+    },
+    {
+      "principle": "Face reveals inner character",
+      "malay": "Wajah mencerminkan karakter batin",
+      "explanation": "Berbagai penampakan di bahagian wajah merupakan petunjuk yang sangat kuat terhadap akhlak batiniah. Ketika merasa malu, takut, marah, atau gembira, wajah akan menampilkan warna tertentu."
+    },
+    {
+      "principle": "Balance is ideal",
+      "malay": "Keseimbangan adalah ideal",
+      "explanation": "Mata yang menonjol keluar atau cekung dianggap tercela kerana yang terbaik adalah mata yang sedang dan seimbang. Prinsip ini berlaku untuk semua ciri fizikal."
+    },
+    {
+      "principle": "Consider conflicting indicators",
+      "malay": "Pertimbangkan petunjuk yang bertentangan",
+      "explanation": "Jika terjadi kontradiksi antara satu petunjuk dengan petunjuk lain, yang harus dilakukan adalah memilih petunjuk terkuat (tarjih). Petunjuk yang muncul dari tempatnya lebih kuat daripada petunjuk yang muncul bukan dari tempatnya."
+    },
+    {
+      "principle": "Context matters",
+      "malay": "Konteks penting",
+      "explanation": "Kepribadian seseorang dapat dipengaruhi oleh faktor-faktor seperti usia, jenis kelamin, kondisi ekonomi, dan letak geografis tempat tinggal."
+    }
+  ],
+  "personality_types": {
+    "sanguinis": {
+      "malay": "Sanguinis (Panas)",
+      "traits": ["cerdas", "pintar", "lancar berbicara", "gesit", "pemarah", "pemberani", "heroik", "nekat"],
+      "physical": "Tubuh kuat, dada bidang, urat nadi lebar, kulit berwarna merah"
+    },
+    "flegmatis": {
+      "malay": "Flegmatis (Dingin)",
+      "traits": ["lambat berfikir", "susah bicara", "gerakan lambat", "penakut", "pengecut"],
+      "physical": "Tubuh lemah, urat nadi sempit, rambut sedikit, kulit putih atau kekuningan"
+    },
+    "melankolis": {
+      "malay": "Melankolis (Basah)",
+      "traits": ["mudah mengantuk", "indra tidak peka", "mudah gementar", "tidak tabah menghadapi tekanan"],
+      "physical": "Otot kecil dan lemah, persendian rapuh, kulit tipis, banyak lemak"
+    },
+    "koleris": {
+      "malay": "Choleric (Kering)",
+      "traits": ["indra peka", "banyak terjaga malam hari", "tabah menghadapi tekanan", "mudah iri"],
+      "physical": "Persendian dan otot kuat, kulit kasar, tubuh kering"
+    }
+  },
+  "warnings": [
+    {
+      "warning": "This is not fortune-telling",
+      "malay": "Ini bukan ramalan nasib",
+      "detail": "Ilmu firasat berbeza dengan ilmu nujum, sihir, atau perdukunan. Firasat hanya mengambil petunjuk dari penampilan lahiriah untuk memahami karakter, bukan meramal masa depan."
+    },
+    {
+      "warning": "Indicators are not absolute",
+      "malay": "Petunjuk bukan mutlak",
+      "detail": "Semua petunjuk yang digunakan bukan merupakan pertanda-pertanda mutlak dan pasti, tetapi hanya sekadar petunjuk yang menghasilkan dugaan."
+    },
+    {
+      "warning": "Character can change",
+      "malay": "Karakter boleh berubah",
+      "detail": "Dalam pergaulan dan interaksinya, seseorang kadang kala juga meniru perilaku orang yang bergaul dan berinteraksi dengannya. Pada kondisi seperti ini, tanda-tanda yang terlihat tidak lagi berfungsi sebagai penyebab yang menentukan kesimpulan."
+    },
+    {
+      "warning": "Seek good appearance",
+      "malay": "Carilah kebaikan dari wajah rupawan",
+      "detail": "Rasulullah SAW bersabda: 'Carilah kebutuhan dari orang-orang berwajah rupawan' kerana wajah yang rupawan menimbulkan sangkaan berupa tindakan yang bagus, biasanya antara penampilan dan akhlak terdapat kesesuaian."
+    }
+  ]
+}

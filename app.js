@@ -181,8 +181,9 @@ async function checkPredictionStatus(predictionId) {
         const data = await response.json();
         
         if (data.status === 'completed' && data.success) {
-            hideLoading();
-            displayResults(data.analysis);
+            // Now get the Kitab Firasat interpretation
+            showLoading('Menterjemah ke Bahasa Melayu dan mentafsir karakter...');
+            await getKitabFirasatInterpretation(data.analysis);
         } else if (data.status === 'processing' || data.status === 'starting') {
             // Check again in 2 seconds
             setTimeout(() => checkPredictionStatus(predictionId), 2000);
@@ -195,6 +196,38 @@ async function checkPredictionStatus(predictionId) {
         hideLoading();
         alert('Error checking analysis status. Trying direct method...');
         analyzeIndividual();
+    }
+}
+
+// Get Kitab Firasat interpretation from OpenAI
+async function getKitabFirasatInterpretation(llavaAnalysis) {
+    try {
+        const response = await fetch('/.netlify/functions/interpret-character', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ llavaAnalysis })
+        });
+        
+        if (!response.ok) {
+            const error = await response.json();
+            console.error('Interpretation error:', error);
+            // Fallback to showing original English analysis
+            hideLoading();
+            displayResults(llavaAnalysis);
+            return;
+        }
+        
+        const data = await response.json();
+        hideLoading();
+        displayKitabFirasatResults(data.interpretation, data.source);
+        
+    } catch (error) {
+        console.error('Error getting interpretation:', error);
+        hideLoading();
+        // Fallback to showing original English analysis
+        displayResults(llavaAnalysis);
     }
 }
 
@@ -281,29 +314,129 @@ function displayResults(analysis) {
                     </div>
                 `;
             } else {
-                // Fallback for sections that don't match the pattern
                 formattedHTML += `
                     <div class="result-card" style="margin-bottom: 15px; padding: 20px;">
-                        <div class="content">
-                            <p>${section.trim()}</p>
-                        </div>
+                        <div class="content"><p>${section.trim()}</p></div>
                     </div>
                 `;
             }
         }
     });
     
-    // Add a note about Kitab Firasat methodology
     formattedHTML += `
         <div style="margin-top: 30px; padding: 20px; background: rgba(157, 78, 221, 0.05); border-radius: 10px; text-align: center;">
             <p style="color: #C77DFF; font-style: italic;">
-                Analysis based on classical Islamic physiognomy (Kitab Firasat) principles.<br>
-                Focused on neutral, structural descriptions for character understanding.
+                Analysis based on classical Islamic physiognomy (Kitab Firasat) principles.
             </p>
         </div>
     `;
     
     resultsContent.innerHTML = formattedHTML;
+    resultsDiv.style.display = 'block';
+}
+
+// Display Kitab Firasat Results in Bahasa Melayu
+function displayKitabFirasatResults(interpretation, source) {
+    const resultsDiv = document.getElementById('analysis-results');
+    const resultsContent = document.getElementById('results-content');
+    
+    const featureIcons = {
+        'dahi': '👁️', 'kening': '🤨', 'mata': '👀', 'hidung': '👃',
+        'mulut_bibir': '👄', 'bentuk_wajah': '🎭', 'rahang_dagu': '🗿',
+        'pipi': '😊', 'telinga': '👂', 'garis_rambut': '💇'
+    };
+    
+    const featureNames = {
+        'dahi': 'Dahi', 'kening': 'Kening', 'mata': 'Mata', 'hidung': 'Hidung',
+        'mulut_bibir': 'Mulut & Bibir', 'bentuk_wajah': 'Bentuk Wajah',
+        'rahang_dagu': 'Rahang & Dagu', 'pipi': 'Pipi', 'telinga': 'Telinga',
+        'garis_rambut': 'Garis Rambut'
+    };
+
+    let html = `
+        <div style="text-align: center; margin-bottom: 25px;">
+            <h3 style="color: #9D4EDD; margin-bottom: 5px;">📖 Analisis Firasat</h3>
+            <p style="color: #E0AAFF; font-size: 0.9em;">
+                Berdasarkan ${source.title} oleh ${source.author} (${source.period})
+            </p>
+        </div>
+    `;
+    
+    // Character Summary Card
+    if (interpretation.character_interpretation) {
+        const ci = interpretation.character_interpretation;
+        html += `
+            <div style="background: linear-gradient(135deg, rgba(157,78,221,0.2), rgba(199,125,255,0.1)); 
+                        padding: 25px; border-radius: 15px; margin-bottom: 25px; border: 1px solid rgba(157,78,221,0.3);">
+                <h4 style="color: #C77DFF; margin-bottom: 15px;">🎯 Ringkasan Karakter</h4>
+                <p style="color: #fff; line-height: 1.7; margin-bottom: 15px;">${ci.overall_summary}</p>
+                <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+                    <div style="flex: 1; min-width: 200px;">
+                        <h5 style="color: #4CAF50; margin-bottom: 10px;">✨ Sifat Positif</h5>
+                        <ul style="color: #eee; margin: 0; padding-left: 20px;">
+                            ${ci.positive_traits.map(t => `<li>${t}</li>`).join('')}
+                        </ul>
+                    </div>
+                    <div style="flex: 1; min-width: 200px;">
+                        <h5 style="color: #FF9800; margin-bottom: 10px;">⚠️ Sifat Perlu Diperhatikan</h5>
+                        <ul style="color: #eee; margin: 0; padding-left: 20px;">
+                            ${ci.negative_traits.map(t => `<li>${t}</li>`).join('')}
+                        </ul>
+                    </div>
+                </div>
+                <p style="color: #E0AAFF; margin-top: 15px; font-style: italic;">
+                    Jenis Kepribadian: <strong>${ci.personality_type}</strong>
+                </p>
+            </div>
+        `;
+    }
+    
+    // Feature Cards
+    html += '<h4 style="color: #C77DFF; margin: 20px 0 15px;">📋 Analisis Ciri-ciri Wajah</h4>';
+    
+    if (interpretation.translated_features) {
+        for (const [key, feature] of Object.entries(interpretation.translated_features)) {
+            const icon = featureIcons[key] || '📝';
+            const name = featureNames[key] || key;
+            html += `
+                <div class="result-card" style="margin-bottom: 12px; padding: 18px; 
+                     background: rgba(157, 78, 221, 0.1); border-radius: 10px; border-left: 4px solid #9D4EDD;">
+                    <h5 style="color: #C77DFF; margin-bottom: 8px; display: flex; align-items: center; gap: 8px;">
+                        <span style="font-size: 1.3em;">${icon}</span> ${name}
+                    </h5>
+                    <p style="color: #fff; line-height: 1.6;">${feature.description}</p>
+                </div>
+            `;
+        }
+    }
+    
+    // Kitab References
+    if (interpretation.kitab_references && interpretation.kitab_references.length > 0) {
+        html += `
+            <div style="margin-top: 25px; padding: 20px; background: rgba(157, 78, 221, 0.05); border-radius: 10px;">
+                <h4 style="color: #C77DFF; margin-bottom: 15px;">📚 Rujukan Kitab Firasat</h4>
+                ${interpretation.kitab_references.map(ref => `
+                    <div style="margin-bottom: 12px; padding: 10px; background: rgba(0,0,0,0.2); border-radius: 8px;">
+                        <strong style="color: #E0AAFF;">${ref.feature}:</strong>
+                        <p style="color: #ccc; font-style: italic; margin: 5px 0;">"${ref.quote}"</p>
+                        <small style="color: #888;">— ${ref.source}</small>
+                    </div>
+                `).join('')}
+            </div>
+        `;
+    }
+    
+    // Disclaimer
+    html += `
+        <div style="margin-top: 25px; padding: 15px; background: rgba(255,152,0,0.1); 
+                    border-radius: 10px; border-left: 4px solid #FF9800; text-align: center;">
+            <p style="color: #FFB74D; font-size: 0.9em;">
+                ⚠️ ${interpretation.disclaimer || 'Tafsiran ini berdasarkan ilmu firasat klasik dan bukan ramalan mutlak. Karakter seseorang boleh berubah dan dipengaruhi oleh banyak faktor.'}
+            </p>
+        </div>
+    `;
+    
+    resultsContent.innerHTML = html;
     resultsDiv.style.display = 'block';
 }
 
