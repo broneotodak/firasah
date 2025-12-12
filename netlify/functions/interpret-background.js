@@ -161,18 +161,89 @@ function getLangConfig(lang) {
   }[lang] || getLangConfig('my');
 }
 
-// Build prompt
+// Build prompt with CLEAR examples
 function buildPrompt(features, lang) {
-  return `Firasah face analysis in ${lang.name}. Features: ${features}
+  const isMyId = lang.name.includes('Melayu') || lang.name.includes('Indonesia');
+  
+  if (isMyId) {
+    return `Anda pakar Kitab Firasat. Analisis wajah ini dan beri tafsiran BERMAKNA dalam Bahasa Melayu.
 
-CRITICAL RULE: negative traits must be SIDE EFFECTS of positives, NOT opposites!
-✓ CORRECT: Firm → Sometimes too strict
-✗ WRONG: Calm → Angry (contradiction!)
+CIRI WAJAH DIKESAN:
+${features}
 
-Each trait must reference the facial feature it comes from.
+PERATURAN PENTING:
+1. Setiap ciri wajah mesti ada TAFSIRAN PENUH (2-3 ayat tentang maksud personaliti)
+2. Sifat negatif = KESAN SAMPINGAN sifat positif (BUKAN bertentangan!)
+   ✓ Betul: Tegas → Kadang terlalu keras
+   ✗ Salah: Tenang → Pemarah
 
-JSON only:
-{"features":{"dahi":"forehead interpretation","mata":"eyes interpretation","hidung":"nose interpretation","mulut":"mouth interpretation","rahang":"jaw interpretation","wajah":"face shape interpretation"},"positive":["Trait1 (from feature) - explanation","Trait2 (from feature) - explanation","Trait3 (from feature) - explanation","Trait4 (from feature) - explanation"],"negative":["Side-effect1 - constructive advice","Side-effect2 - constructive advice","Side-effect3 - constructive advice"],"type":"Personality type - brief explanation","summary":"4-5 sentences unique character summary for this specific face","ref":{"quote":"relevant Kitab Firasat quote","feature":"related feature"}}`;
+CONTOH OUTPUT YANG BETUL:
+{
+  "features": {
+    "dahi": "Dahi yang sederhana lebar menunjukkan keseimbangan pemikiran. Menurut Kitab Firasat, ini petanda seseorang yang bijak membuat keputusan tanpa tergesa-gesa.",
+    "mata": "Mata yang tajam dan fokus seperti elang menandakan ketelitian tinggi. Pemilik mata sebegini biasanya pemerhati yang baik dan sukar ditipu.",
+    "hidung": "Hidung yang sederhana mancung menunjukkan keyakinan diri yang sihat. Tidak sombong tetapi tahu nilai diri sendiri.",
+    "mulut": "Bibir yang sederhana tebal menandakan kesetiaan dan kasih sayang. Orang sebegini biasanya setia dalam perhubungan.",
+    "rahang": "Rahang yang tegas menunjukkan ketabahan menghadapi cabaran. Tidak mudah berputus asa.",
+    "wajah": "Bentuk wajah oval menandakan keseimbangan antara logik dan emosi. Diplomatis dalam pergaulan."
+  },
+  "positive": [
+    "Kebijaksanaan (dari dahi sederhana) - Mampu berfikir sebelum bertindak",
+    "Ketelitian (dari mata tajam) - Pemerhati yang baik, tidak mudah terlepas pandang",
+    "Keyakinan Diri (dari hidung mancung) - Yakin dengan kemampuan sendiri",
+    "Kesetiaan (dari bibir penuh) - Setia dan boleh dipercayai"
+  ],
+  "negative": [
+    "Terlalu berhati-hati - Kadang lambat membuat keputusan kerana terlalu menganalisis",
+    "Terlalu teliti - Boleh menjadi kritikal terhadap kesilapan kecil orang lain",
+    "Degil - Keyakinan diri yang tinggi kadang menjadi keras kepala"
+  ],
+  "type": "Melankolis-Koleris - Pemikir yang tegas, teliti tetapi kadang terlalu serius",
+  "summary": "Individu ini memiliki gabungan kebijaksanaan dan ketegasan yang jarang ditemui. Dahi yang seimbang menunjukkan pemikiran yang matang, manakala mata yang tajam menjadikannya pemerhati yang baik. Dalam perhubungan, kesetiaan adalah kekuatan utama. Cabaran utama adalah belajar untuk tidak terlalu kritikal dan lebih fleksibel.",
+  "ref": {"quote": "Dahi yang sederhana adalah tanda akal yang seimbang dan hati yang tenang", "feature": "Dahi"}
+}
+
+SEKARANG, beri tafsiran untuk wajah ini. JSON sahaja:`;
+  }
+  
+  return `You are a Kitab Firasat expert. Analyze this face and provide MEANINGFUL interpretation in English.
+
+DETECTED FACIAL FEATURES:
+${features}
+
+IMPORTANT RULES:
+1. Each feature must have FULL INTERPRETATION (2-3 sentences about personality meaning)
+2. Negative traits = SIDE EFFECTS of positives (NOT opposites!)
+   ✓ Correct: Firm → Sometimes too strict
+   ✗ Wrong: Calm → Angry
+
+EXAMPLE OF CORRECT OUTPUT:
+{
+  "features": {
+    "dahi": "A moderately wide forehead indicates balanced thinking. According to Kitab Firasat, this is a sign of someone who makes wise decisions without rushing.",
+    "mata": "Sharp, focused eyes like an eagle indicate high attention to detail. Such eyes usually belong to good observers who are hard to deceive.",
+    "hidung": "A moderately prominent nose shows healthy self-confidence. Not arrogant but knows their own worth.",
+    "mulut": "Moderately full lips indicate loyalty and affection. Such people are usually faithful in relationships.",
+    "rahang": "A firm jaw shows resilience in facing challenges. Not easily discouraged.",
+    "wajah": "An oval face shape indicates balance between logic and emotion. Diplomatic in social interactions."
+  },
+  "positive": [
+    "Wisdom (from balanced forehead) - Able to think before acting",
+    "Attention to Detail (from sharp eyes) - Good observer, doesn't miss things easily",
+    "Self-Confidence (from prominent nose) - Confident in own abilities",
+    "Loyalty (from full lips) - Faithful and trustworthy"
+  ],
+  "negative": [
+    "Overly cautious - Sometimes slow to decide due to over-analysis",
+    "Too detail-oriented - Can become critical of others' small mistakes",
+    "Stubborn - High self-confidence sometimes becomes inflexibility"
+  ],
+  "type": "Melancholic-Choleric - A firm thinker, meticulous but sometimes too serious",
+  "summary": "This individual possesses a rare combination of wisdom and firmness. The balanced forehead shows mature thinking, while sharp eyes make them a good observer. In relationships, loyalty is their main strength. The main challenge is learning not to be too critical and to be more flexible.",
+  "ref": {"quote": "A balanced forehead is a sign of balanced intellect and a calm heart", "feature": "Forehead"}
+}
+
+NOW, provide interpretation for this face. JSON only:`;
 }
 
 // Transform compact result to frontend format
