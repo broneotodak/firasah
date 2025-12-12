@@ -34,6 +34,21 @@ exports.handler = async (event, context) => {
       const output = prediction.output;
       const analysis = Array.isArray(output) ? output.join('') : String(output);
       
+      // Check for face validation failure
+      if (analysis.startsWith('VALIDATION_FAILED:')) {
+        const reason = analysis.replace('VALIDATION_FAILED:', '').trim();
+        return {
+          statusCode: 200,
+          headers,
+          body: JSON.stringify({
+            success: false,
+            status: 'validation_failed',
+            error: reason,
+            errorType: 'invalid_face'
+          })
+        };
+      }
+      
       return {
         statusCode: 200,
         headers,

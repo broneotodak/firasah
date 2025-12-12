@@ -956,3 +956,229 @@ body.dark-theme .results-notification {
     background: linear-gradient(135deg, #C77DFF, #9D4EDD);
     box-shadow: 0 10px 40px rgba(199, 125, 255, 0.3);
 }
+
+
+/* ============================================
+   VALIDATION ERROR STYLES
+   ============================================ */
+
+.validation-error {
+    text-align: center;
+    padding: 40px 20px;
+    background: linear-gradient(135deg, rgba(255, 82, 82, 0.1), rgba(255, 152, 0, 0.1));
+    border-radius: 20px;
+    border: 2px dashed rgba(255, 82, 82, 0.3);
+}
+
+.validation-error .error-icon {
+    font-size: 4em;
+    margin-bottom: 15px;
+}
+
+.validation-error h3 {
+    color: #ff5252;
+    font-size: 1.5em;
+    margin-bottom: 10px;
+}
+
+.validation-error .error-reason {
+    color: #ffab40;
+    font-size: 1.1em;
+    margin-bottom: 10px;
+    padding: 10px;
+    background: rgba(255, 171, 64, 0.1);
+    border-radius: 10px;
+}
+
+.validation-error .error-subtitle {
+    color: #999;
+    margin-bottom: 20px;
+}
+
+.try-again-btn {
+    background: linear-gradient(135deg, #9D4EDD, #7B2CBF);
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 25px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.try-again-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 5px 20px rgba(157, 78, 221, 0.4);
+}
+
+/* ============================================
+   SHARE BUTTON STYLES
+   ============================================ */
+
+.share-container {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin: 25px 0;
+    flex-wrap: wrap;
+}
+
+.share-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    border-radius: 25px;
+    font-size: 0.95em;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+    color: white;
+}
+
+.share-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.share-btn.instagram {
+    background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+}
+
+.share-btn.tiktok {
+    background: linear-gradient(45deg, #00f2ea, #ff0050);
+}
+
+.share-btn.whatsapp {
+    background: #25D366;
+}
+
+.share-btn.twitter {
+    background: #1DA1F2;
+}
+
+.share-btn.copy-link {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+}
+
+.share-btn .icon {
+    font-size: 1.2em;
+}
+
+/* Share modal */
+.share-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.share-modal.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.share-modal-content {
+    background: #1a1a2e;
+    padding: 30px;
+    border-radius: 20px;
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+}
+
+.share-modal-content h3 {
+    color: #C77DFF;
+    margin-bottom: 20px;
+}
+
+.share-modal-content .share-preview {
+    background: linear-gradient(135deg, #9D4EDD, #7B2CBF);
+    padding: 20px;
+    border-radius: 15px;
+    margin-bottom: 20px;
+    color: white;
+}
+
+.share-modal-content .close-modal {
+    background: transparent;
+    border: 1px solid #666;
+    color: #999;
+    padding: 10px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    margin-top: 15px;
+}
+
+/* Toast notification */
+.toast {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: #333;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 25px;
+    opacity: 0;
+    transition: all 0.3s ease;
+    z-index: 10001;
+}
+
+.toast.show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+}
+
+.toast.success {
+    background: linear-gradient(135deg, #4CAF50, #45a049);
+}
+
+/* Analysis mode buttons */
+.analysis-mode-container {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.mode-btn {
+    padding: 10px 20px;
+    border-radius: 20px;
+    border: 2px solid #9D4EDD;
+    background: transparent;
+    color: #9D4EDD;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.9em;
+}
+
+.mode-btn.active {
+    background: #9D4EDD;
+    color: white;
+}
+
+.mode-btn:hover:not(.active) {
+    background: rgba(157, 78, 221, 0.2);
+}
+
+@media (max-width: 768px) {
+    .share-container {
+        gap: 10px;
+    }
+    
+    .share-btn {
+        padding: 10px 15px;
+        font-size: 0.85em;
+    }
+}

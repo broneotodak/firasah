@@ -180,6 +180,13 @@ async function checkPredictionStatus(predictionId) {
         const response = await fetch(`/.netlify/functions/check-prediction?id=${predictionId}`);
         const data = await response.json();
         
+        // Handle face validation failure
+        if (data.status === 'validation_failed') {
+            hideLoading();
+            showValidationError(data.error);
+            return;
+        }
+        
         if (data.status === 'completed' && data.success) {
             // Get selected language for loading message
             const language = document.getElementById('language-select')?.value || 'my';
@@ -203,6 +210,98 @@ async function checkPredictionStatus(predictionId) {
         alert('Error checking analysis status. Trying direct method...');
         analyzeIndividual();
     }
+}
+
+// Show validation error to user
+function showValidationError(errorMessage) {
+    const language = document.getElementById('language-select')?.value || 'my';
+    
+    const errorMessages = {
+        'my': {
+            title: '⚠️ Gambar Tidak Sah',
+            subtitle: 'Sila muat naik gambar wajah manusia yang jelas',
+            reasons: {
+                'animal': 'Ini kelihatan seperti gambar haiwan, bukan manusia',
+                'cartoon': 'Ini kelihatan seperti kartun atau ilustrasi',
+                'blurry': 'Gambar terlalu kabur untuk dianalisis',
+                'no_face': 'Tiada wajah manusia dikesan dalam gambar',
+                'multiple': 'Beberapa wajah dikesan - sila muat naik satu wajah sahaja',
+                'default': errorMessage
+            },
+            tryAgain: 'Cuba Lagi'
+        },
+        'en': {
+            title: '⚠️ Invalid Image',
+            subtitle: 'Please upload a clear human face photo',
+            reasons: {
+                'animal': 'This appears to be an animal, not a human',
+                'cartoon': 'This appears to be a cartoon or illustration',
+                'blurry': 'Image is too blurry to analyze',
+                'no_face': 'No human face detected in image',
+                'multiple': 'Multiple faces detected - please upload single face',
+                'default': errorMessage
+            },
+            tryAgain: 'Try Again'
+        },
+        'id': {
+            title: '⚠️ Gambar Tidak Valid',
+            subtitle: 'Silakan unggah foto wajah manusia yang jelas',
+            reasons: {
+                'animal': 'Ini tampak seperti gambar hewan, bukan manusia',
+                'cartoon': 'Ini tampak seperti kartun atau ilustrasi',
+                'blurry': 'Gambar terlalu buram untuk dianalisis',
+                'no_face': 'Tidak ada wajah manusia terdeteksi dalam gambar',
+                'multiple': 'Beberapa wajah terdeteksi - silakan unggah satu wajah saja',
+                'default': errorMessage
+            },
+            tryAgain: 'Coba Lagi'
+        }
+    };
+    
+    const lang = errorMessages[language] || errorMessages['my'];
+    
+    // Determine error type from message
+    let reasonKey = 'default';
+    const lowerError = errorMessage.toLowerCase();
+    if (lowerError.includes('animal') || lowerError.includes('cat') || lowerError.includes('dog')) reasonKey = 'animal';
+    else if (lowerError.includes('cartoon') || lowerError.includes('illustration')) reasonKey = 'cartoon';
+    else if (lowerError.includes('blurry') || lowerError.includes('blur')) reasonKey = 'blurry';
+    else if (lowerError.includes('no') && lowerError.includes('face')) reasonKey = 'no_face';
+    else if (lowerError.includes('multiple')) reasonKey = 'multiple';
+    
+    const reason = lang.reasons[reasonKey];
+    
+    // Show error in results area
+    const resultsDiv = document.getElementById('analysis-results');
+    const resultsContent = document.getElementById('results-content');
+    
+    resultsContent.innerHTML = `
+        <div class="validation-error">
+            <div class="error-icon">🚫</div>
+            <h3>${lang.title}</h3>
+            <p class="error-reason">${reason}</p>
+            <p class="error-subtitle">${lang.subtitle}</p>
+            <button onclick="resetUpload()" class="try-again-btn">${lang.tryAgain}</button>
+        </div>
+    `;
+    resultsDiv.style.display = 'block';
+    scrollToResults(resultsDiv);
+}
+
+// Reset upload for retry
+function resetUpload() {
+    selectedFile = null;
+    const preview = document.getElementById('preview');
+    const placeholder = document.getElementById('placeholder');
+    const resultsDiv = document.getElementById('analysis-results');
+    
+    if (preview) preview.style.display = 'none';
+    if (placeholder) placeholder.style.display = 'block';
+    if (resultsDiv) resultsDiv.style.display = 'none';
+    
+    // Clear file input
+    const fileInput = document.getElementById('file-input');
+    if (fileInput) fileInput.value = '';
 }
 
 // Get Kitab Firasat interpretation using background function + polling
@@ -490,6 +589,34 @@ function displayKitabFirasatResults(interpretation, source, langConfig) {
         </div>
     `;
     
+    // Share buttons
+    const shareLabels = {
+        my: { share: 'Kongsi Hasil', copy: 'Salin Pautan' },
+        en: { share: 'Share Results', copy: 'Copy Link' },
+        id: { share: 'Bagikan Hasil', copy: 'Salin Tautan' }
+    };
+    const shareLang = shareLabels[document.getElementById('language-select')?.value] || shareLabels.my;
+    
+    // Store interpretation for sharing
+    window.currentInterpretation = interpretation;
+    
+    html += `
+        <div class="share-container">
+            <button class="share-btn instagram" onclick="shareToInstagram()">
+                <span class="icon">📸</span> Instagram
+            </button>
+            <button class="share-btn whatsapp" onclick="shareToWhatsApp()">
+                <span class="icon">💬</span> WhatsApp
+            </button>
+            <button class="share-btn twitter" onclick="shareToTwitter()">
+                <span class="icon">𝕏</span> Twitter/X
+            </button>
+            <button class="share-btn copy-link" onclick="copyShareLink()">
+                <span class="icon">🔗</span> ${shareLang.copy}
+            </button>
+        </div>
+    `;
+    
     resultsContent.innerHTML = html;
     resultsDiv.style.display = 'block';
     
@@ -594,4 +721,168 @@ function exportAnalysisAsJSON() {
     a.href = url;
     a.download = `firasah-analysis-${Date.now()}.json`;
     a.click();
+}
+
+// ============================================
+// SOCIAL SHARING FUNCTIONS
+// ============================================
+
+// Generate share text from interpretation
+function generateShareText() {
+    const interpretation = window.currentInterpretation;
+    if (!interpretation || !interpretation.character_interpretation) {
+        return 'Lihat analisis wajah saya berdasarkan Kitab Firasat! 🔮';
+    }
+    
+    const ci = interpretation.character_interpretation;
+    const personality = ci.personality_type || '';
+    const topTrait = ci.positive_traits?.[0] || '';
+    
+    const language = document.getElementById('language-select')?.value || 'my';
+    
+    const templates = {
+        my: `🔮 Analisis Firasah Saya:\n\n✨ Personaliti: ${personality}\n💫 Kekuatan: ${topTrait}\n\nCuba analisis wajah anda di:`,
+        en: `🔮 My Firasah Analysis:\n\n✨ Personality: ${personality}\n💫 Strength: ${topTrait}\n\nTry your face analysis at:`,
+        id: `🔮 Analisis Firasah Saya:\n\n✨ Kepribadian: ${personality}\n💫 Kekuatan: ${topTrait}\n\nCoba analisis wajah anda di:`
+    };
+    
+    return templates[language] || templates.my;
+}
+
+// Share to Instagram (opens story composer)
+function shareToInstagram() {
+    const shareText = generateShareText();
+    const url = 'https://firasah.neotodak.com';
+    
+    // Instagram doesn't have direct share API, so we show instructions
+    showShareModal('instagram', shareText, url);
+}
+
+// Share to WhatsApp
+function shareToWhatsApp() {
+    const shareText = generateShareText();
+    const url = 'https://firasah.neotodak.com';
+    const fullText = encodeURIComponent(`${shareText}\n${url}`);
+    
+    window.open(`https://wa.me/?text=${fullText}`, '_blank');
+}
+
+// Share to Twitter/X
+function shareToTwitter() {
+    const shareText = generateShareText();
+    const url = 'https://firasah.neotodak.com';
+    const fullText = encodeURIComponent(`${shareText}`);
+    const encodedUrl = encodeURIComponent(url);
+    
+    window.open(`https://twitter.com/intent/tweet?text=${fullText}&url=${encodedUrl}`, '_blank');
+}
+
+// Copy share link
+function copyShareLink() {
+    const url = 'https://firasah.neotodak.com';
+    
+    navigator.clipboard.writeText(url).then(() => {
+        showToast('✅ Pautan disalin!', 'success');
+    }).catch(() => {
+        // Fallback for older browsers
+        const textArea = document.createElement('textarea');
+        textArea.value = url;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        showToast('✅ Pautan disalin!', 'success');
+    });
+}
+
+// Show share modal (for Instagram)
+function showShareModal(platform, text, url) {
+    const modal = document.createElement('div');
+    modal.className = 'share-modal';
+    modal.id = 'share-modal';
+    
+    const language = document.getElementById('language-select')?.value || 'my';
+    const labels = {
+        my: {
+            title: '📸 Kongsi ke Instagram',
+            step1: '1. Screenshot hasil analisis anda',
+            step2: '2. Buka Instagram Story',
+            step3: '3. Tambah gambar dan link:',
+            close: 'Tutup'
+        },
+        en: {
+            title: '📸 Share to Instagram',
+            step1: '1. Screenshot your analysis results',
+            step2: '2. Open Instagram Story',
+            step3: '3. Add image and link:',
+            close: 'Close'
+        },
+        id: {
+            title: '📸 Bagikan ke Instagram',
+            step1: '1. Screenshot hasil analisis anda',
+            step2: '2. Buka Instagram Story',
+            step3: '3. Tambahkan gambar dan link:',
+            close: 'Tutup'
+        }
+    };
+    const lang = labels[language] || labels.my;
+    
+    modal.innerHTML = `
+        <div class="share-modal-content">
+            <h3>${lang.title}</h3>
+            <div class="share-steps">
+                <p>${lang.step1}</p>
+                <p>${lang.step2}</p>
+                <p>${lang.step3}</p>
+                <div class="share-preview">
+                    <strong>firasah.neotodak.com</strong>
+                    <p style="font-size: 0.9em; margin-top: 10px;">🔮 Analisis Wajah Berdasarkan Kitab Firasat</p>
+                </div>
+            </div>
+            <button class="share-btn copy-link" onclick="copyShareLink(); closeShareModal();">
+                <span class="icon">🔗</span> Salin Pautan
+            </button>
+            <button class="close-modal" onclick="closeShareModal()">${lang.close}</button>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    // Animate in
+    setTimeout(() => modal.classList.add('active'), 10);
+    
+    // Close on background click
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeShareModal();
+    });
+}
+
+// Close share modal
+function closeShareModal() {
+    const modal = document.getElementById('share-modal');
+    if (modal) {
+        modal.classList.remove('active');
+        setTimeout(() => modal.remove(), 300);
+    }
+}
+
+// Show toast notification
+function showToast(message, type = 'default') {
+    // Remove existing toast
+    const existing = document.querySelector('.toast');
+    if (existing) existing.remove();
+    
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    
+    // Animate in
+    setTimeout(() => toast.classList.add('show'), 10);
+    
+    // Remove after 3 seconds
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
 }

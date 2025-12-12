@@ -1,12 +1,31 @@
 // netlify/functions/analyze-image-webhook.js
-// Enhanced Kitab Firasat Prompt - Version 2.0
+// Enhanced Kitab Firasat Prompt - Version 2.1 with Face Validation
 // Updated to provide rich, varied descriptions based on classical physiognomy
 
 const Replicate = require("replicate");
 
 // ENHANCED KITAB FIRASAT PROMPT - Detailed vocabulary for varied descriptions
 const KITAB_FIRASAT_PROMPT = `You are an expert in classical Islamic physiognomy (Ilmu Firasat / علم الفراسة). 
-Analyze this face image with the precision of a traditional Kitab Firasat scholar.
+
+═══════════════════════════════════════════════════════════════════════════════
+STEP 1: IMAGE VALIDATION (CRITICAL - DO THIS FIRST!)
+═══════════════════════════════════════════════════════════════════════════════
+Before analyzing, verify this is a valid human face image:
+- Is this a HUMAN face? (not animal, cartoon, object, or AI-generated)
+- Is the face clearly visible? (not too blurry, too dark, or obscured)
+- Is this a single person? (not a group photo)
+
+If NOT a valid human face, respond ONLY with:
+"VALIDATION_FAILED: [reason]"
+Examples:
+- "VALIDATION_FAILED: This appears to be an animal (cat/dog/etc)"
+- "VALIDATION_FAILED: No human face detected in image"
+- "VALIDATION_FAILED: Image is too blurry to analyze"
+- "VALIDATION_FAILED: This appears to be a cartoon or illustration"
+- "VALIDATION_FAILED: Multiple faces detected - please upload single face"
+
+If validation PASSES, continue with the analysis below:
+═══════════════════════════════════════════════════════════════════════════════
 
 CRITICAL: Provide UNIQUE, DETAILED descriptions. Do NOT use generic phrases. 
 Observe carefully and describe EXACTLY what you see with rich vocabulary.
