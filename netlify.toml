@@ -3,7 +3,12 @@
 
 [functions]
   node_bundler = "esbuild"
-  
+
+# Background function for AI interpretation (up to 15 minutes)
+[functions."interpret-background"]
+  type = "background"
+
+# Standard functions with extended timeout
 [functions."interpret-character"]
   timeout = 26
 
@@ -12,6 +17,9 @@
 
 [functions."check-prediction"]
   timeout = 26
+
+[functions."check-interpret"]
+  timeout = 10
 
 [[redirects]]
   from = "/api/*"

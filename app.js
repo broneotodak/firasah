@@ -205,32 +205,36 @@ async function checkPredictionStatus(predictionId) {
     }
 }
 
-// Get Kitab Firasat interpretation from OpenAI
+// Get Kitab Firasat interpretation using background function + polling
 async function getKitabFirasatInterpretation(llavaAnalysis) {
     try {
-        // Get selected language
         const language = document.getElementById('language-select')?.value || 'my';
+        const jobId = `frs_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`;
         
-        const response = await fetch('/.netlify/functions/interpret-character', {
+        updateLoadingText('Memulakan tafsiran karakter...');
+        
+        // Start background job
+        const startResponse = await fetch('/.netlify/functions/interpret-background', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ llavaAnalysis, language })
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ llavaAnalysis, language, jobId })
         });
         
-        if (!response.ok) {
-            const error = await response.json();
-            console.error('Interpretation error:', error);
-            // Fallback to showing original English analysis
-            hideLoading();
-            displayResults(llavaAnalysis);
-            return;
+        // Background function returns 202, but we also handle other cases
+        if (!startResponse.ok && startResponse.status !== 202) {
+            throw new Error('Failed to start interpretation');
         }
         
-        const data = await response.json();
-        hideLoading();
-        displayKitabFirasatResults(data.interpretation, data.source, data.langConfig);
+        // Poll for results
+        updateLoadingText('Menganalisis personaliti...');
+        const result = await pollInterpretationResult(jobId);
+        
+        if (result.status === 'completed') {
+            hideLoading();
+            displayKitabFirasatResults(result.interpretation, result.source, result.langConfig);
+        } else if (result.status === 'failed') {
+            throw new Error(result.error || 'Interpretation failed');
+        }
         
     } catch (error) {
         console.error('Error getting interpretation:', error);
@@ -238,6 +242,38 @@ async function getKitabFirasatInterpretation(llavaAnalysis) {
         // Fallback to showing original English analysis
         displayResults(llavaAnalysis);
     }
+}
+
+// Poll for interpretation result
+async function pollInterpretationResult(jobId, maxAttempts = 60, interval = 2000) {
+    for (let attempt = 0; attempt < maxAttempts; attempt++) {
+        try {
+            const response = await fetch(`/.netlify/functions/check-interpret?id=${jobId}`);
+            const data = await response.json();
+            
+            if (data.status === 'completed' || data.status === 'failed') {
+                return data;
+            }
+            
+            // Still processing - wait and retry
+            if (attempt % 5 === 0) {
+                updateLoadingText('Mentafsir ciri-ciri wajah...');
+            }
+            await new Promise(resolve => setTimeout(resolve, interval));
+            
+        } catch (error) {
+            console.error('Poll error:', error);
+            await new Promise(resolve => setTimeout(resolve, interval));
+        }
+    }
+    
+    return { status: 'failed', error: 'Interpretation timeout' };
+}
+
+// Update loading text helper
+function updateLoadingText(text) {
+    const loadingText = document.getElementById('loading-text');
+    if (loadingText) loadingText.textContent = text;
 }
 
 // OLD: Direct analysis (might timeout)
