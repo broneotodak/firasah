@@ -97,4 +97,4 @@ exports.handler = async (event, context) => {
     };
   }
 };
-// Force redeploy Sat Dec 13 00:23:43 WIB 2025
+

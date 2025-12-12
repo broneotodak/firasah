@@ -248,7 +248,7 @@ async function getKitabFirasatInterpretation(llavaAnalysis) {
 async function pollInterpretationResult(jobId, maxAttempts = 60, interval = 2000) {
     for (let attempt = 0; attempt < maxAttempts; attempt++) {
         try {
-            const response = await fetch(`/.netlify/functions/check-interpret?id=${jobId}`);
+            const response = await fetch(`/.netlify/functions/check-interpretation?id=${jobId}`);
             const data = await response.json();
             
             if (data.status === 'completed' || data.status === 'failed') {

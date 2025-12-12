@@ -18,7 +18,7 @@
 [functions."check-prediction"]
   timeout = 26
 
-[functions."check-interpret"]
+[functions."check-interpretation"]
   timeout = 10
 
 [[redirects]]
