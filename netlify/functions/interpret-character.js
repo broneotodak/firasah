@@ -1,5 +1,5 @@
 // netlify/functions/interpret-character.js
-// Multi-provider: Claude, Gemini, OpenAI - with load distribution
+// Enhanced v2.0 - Logically consistent traits derived from actual features
 
 exports.handler = async (event, context) => {
   const headers = {
@@ -37,7 +37,6 @@ exports.handler = async (event, context) => {
       return { statusCode: 500, headers, body: JSON.stringify({ error: 'No API keys configured' }) };
     }
 
-    // Rotate primary provider based on timestamp (distributes load)
     const rotationIndex = Math.floor(Date.now() / 1000) % availableProviders.length;
     const orderedProviders = [
       ...availableProviders.slice(rotationIndex),
@@ -54,7 +53,7 @@ exports.handler = async (event, context) => {
         positiveLabel: 'Positive Traits',
         negativeLabel: 'Traits to Watch',
         personalityLabel: 'Personality Type',
-        disclaimer: 'Based on Kitab Firasat by Imam Fakhruddin ar-Razi (1150-1210 CE). Classical Islamic physiognomy for self-understanding, not fortune-telling.' 
+        disclaimer: 'Based on Kitab Firasat. Classical physiognomy for self-reflection, not absolute judgment.' 
       },
       my: { 
         name: 'Bahasa Melayu', 
@@ -62,7 +61,7 @@ exports.handler = async (event, context) => {
         positiveLabel: 'Sifat Positif',
         negativeLabel: 'Sifat Perlu Diperhatikan',
         personalityLabel: 'Jenis Personaliti',
-        disclaimer: 'Berdasarkan Kitab Firasat karya Imam Fakhruddin ar-Razi (1150-1210 M). Ilmu firasat Islam klasik untuk memahami diri, bukan ramalan.' 
+        disclaimer: 'Berdasarkan Kitab Firasat. Ilmu firasat klasik untuk muhasabah diri, bukan penghakiman mutlak.' 
       },
       id: { 
         name: 'Bahasa Indonesia', 
@@ -70,58 +69,18 @@ exports.handler = async (event, context) => {
         positiveLabel: 'Sifat Positif',
         negativeLabel: 'Sifat yang Perlu Diperhatikan',
         personalityLabel: 'Tipe Kepribadian',
-        disclaimer: 'Berdasarkan Kitab Firasat karya Imam Fakhruddin ar-Razi (1150-1210 M). Ilmu firasat Islam klasik untuk memahami diri, bukan ramalan.' 
+        disclaimer: 'Berdasarkan Kitab Firasat. Ilmu firasat klasik untuk refleksi diri, bukan penilaian mutlak.' 
       }
     };
     const lang = langConfig[language] || langConfig.my;
 
-    const kitabRef = `KITAB FIRASAT (الفراسة) - Imam Fakhruddin ar-Razi:
-
-DAHI (الجبهة): Besar→Pemalas,pemarah | Kecil→Bodoh | Berkerut→Congkak | Rata→Pengacau
-MATA (العينين): Besar→Pemalas(kerbau) | Cekung→Jahat(kera) | Agak-cekung→Jiwa-baik(harimau) | Bersinar→Cerdas
-HIDUNG (الأنف): Lancip→Permusuhan(anjing) | Mancung→Mulia(elang) | Tebal→Kurang-paham | Lubang-besar→Pemarah
-MULUT (الفم): Tebal→Keras-kepala | Tipis→Jiwa-baik | Lebar→Syahwat-besar
-WAJAH (الوجه): Bulat→Bodoh(kera) | Oval→Seimbang | Kurus→Teliti
-TELINGA (الأذن): Besar→Panjang-umur | Kecil→Cerdas
-MIZAJ: Sanguinis(دموي)=Berani,cerdas | Flegmatis(بلغمي)=Tenang,sabar | Melankolis(سوداوي)=Sensitif | Koleris(صفراوي)=Tabah,tegas`;
-
-    const prompt = `Anda pakar Kitab Firasat. Analisis ciri wajah dan berikan tafsiran LENGKAP dalam ${lang.name}.
-
-RUJUKAN: ${kitabRef}
-
-ANALISIS: ${extractedFeatures}
-
-OUTPUT JSON (WAJIB ikut format ini dengan tepat):
-{
-  "translated_features": {
-    "dahi": {"description": "[2-3 ayat tafsiran dengan perbandingan haiwan]", "arabic": "الجبهة"},
-    "mata": {"description": "[2-3 ayat]", "arabic": "العينين"},
-    "hidung": {"description": "[2-3 ayat]", "arabic": "الأنف"},
-    "mulut_bibir": {"description": "[2-3 ayat]", "arabic": "الفم"},
-    "bentuk_wajah": {"description": "[2-3 ayat]", "arabic": "الوجه"}
-  },
-  "character_interpretation": {
-    "positive_traits": ["Sifat 1 - penjelasan kekuatan", "Sifat 2 - penjelasan", "Sifat 3 - penjelasan", "Sifat 4 - penjelasan", "Sifat 5 - penjelasan"],
-    "negative_traits": ["Sifat 1 - nasihat membina", "Sifat 2 - nasihat", "Sifat 3 - nasihat"],
-    "personality_type": "[Mizaj] (Arab) - [2 ayat penjelasan temperamen]",
-    "overall_summary": "[WAJIB 6-8 AYAT PENUH: Gambaran karakter menyeluruh - kekuatan, cabaran, cara bergaul, potensi, hikmah Kitab. Jadikan bermakna!]"
-  },
-  "kitab_references": [
-    {"feature": "Dahi", "quote": "[Petikan dari Kitab]", "arabic_term": "الجبهة"},
-    {"feature": "Mata", "quote": "[Petikan]", "arabic_term": "العينين"},
-    {"feature": "Hidung", "quote": "[Petikan]", "arabic_term": "الأنف"}
-  ],
-  "disclaimer": "${lang.disclaimer}"
-}
-
-PENTING: Gunakan perbandingan haiwan (harimau, kerbau, elang, kera). Summary MESTI 6-8 ayat!`;
+    // ENHANCED PROMPT with logical consistency rules
+    const prompt = buildEnhancedPrompt(extractedFeatures, lang);
 
     let interpretation = null;
     let usage = null;
     let provider = null;
-    let geminiError = null; // Debug
 
-    // Try providers in rotation order
     for (const currentProvider of orderedProviders) {
       if (interpretation) break;
       
@@ -134,13 +93,7 @@ PENTING: Gunakan perbandingan haiwan (harimau, kerbau, elang, kera). Summary MES
         } 
         else if (currentProvider === 'gemini') {
           const result = await callGemini(GEMINI_API_KEY, prompt);
-          if (result) { 
-            interpretation = result.interpretation; 
-            usage = result.usage; 
-            provider = 'gemini'; 
-          } else {
-            geminiError = result?.error || 'returned null';
-          }
+          if (result) { interpretation = result.interpretation; usage = result.usage; provider = 'gemini'; }
         }
         else if (currentProvider === 'openai') {
           const result = await callOpenAI(OPENAI_API_KEY, prompt);
@@ -150,7 +103,6 @@ PENTING: Gunakan perbandingan haiwan (harimau, kerbau, elang, kera). Summary MES
         if (interpretation) console.log(`${currentProvider} SUCCESS`);
       } catch (err) {
         console.log(`${currentProvider} failed:`, err.message);
-        if (currentProvider === 'gemini') geminiError = err.message;
       }
     }
 
@@ -168,8 +120,7 @@ PENTING: Gunakan perbandingan haiwan (harimau, kerbau, elang, kera). Summary MES
         language,
         langConfig: lang,
         usage,
-        provider,
-        debug: { availableProviders, orderedProviders, geminiError }
+        provider
       })
     };
 
@@ -179,8 +130,124 @@ PENTING: Gunakan perbandingan haiwan (harimau, kerbau, elang, kera). Summary MES
   }
 };
 
+// Build enhanced prompt with logical consistency
+function buildEnhancedPrompt(features, lang) {
+  return `Anda pakar Kitab Firasat (الفراسة) oleh Imam Fakhruddin ar-Razi.
 
-// Claude API (Anthropic)
+═══════════════════════════════════════════════════════════════════════════════
+RUJUKAN KITAB FIRASAT - GUNAKAN INI UNTUK TAFSIRAN
+═══════════════════════════════════════════════════════════════════════════════
+
+DAHI (الجبهة):
+- Lebar & tinggi → Bijaksana, pemikir mendalam (seperti gajah)
+- Sempit → Tergesa-gesa, kurang sabar
+- Berkerut mendatar → Banyak pengalaman hidup
+- Licin rata → Tenang, kurang tekanan
+
+MATA (العينين):
+- Besar bulat → Peramah tetapi mudah terpengaruh (kerbau)
+- Kecil tajam → Teliti, berhati-hati (elang)
+- Cekung dalam → Pemikir, introvert (harimau)
+- Bercahaya → Cerdas, bertenaga
+
+HIDUNG (الأنف):
+- Mancung tinggi → Bermaruah, bangga (elang)
+- Lebar rata → Pemurah, mudah mesra
+- Hujung bulat → Baik hati, penyayang
+- Lubang besar → Bertenaga, kadang impulsif
+
+MULUT & BIBIR (الفم):
+- Bibir tebal → Penyayang, setia tetapi degil
+- Bibir nipis → Tegas, berdisiplin
+- Mulut lebar → Peramah, suka bersosial
+- Mulut kecil → Berhati-hati dalam percakapan
+
+WAJAH (الوجه):
+- Bulat → Mesra, optimis tetapi kadang naif
+- Oval → Seimbang, diplomatis
+- Persegi → Tegas, praktikal
+- Panjang → Sensitif, artistik
+
+RAHANG & DAGU (الذقن):
+- Rahang lebar kuat → Tekad kuat, berkeyakinan
+- Dagu tajam → Tegas dalam keputusan
+- Dagu bulat → Lembut, diplomatis
+- Rahang sempit → Fleksibel, mudah menyesuaikan
+
+TELINGA (الأذن):
+- Besar → Bijaksana, pendengar baik
+- Kecil → Fokus, tidak mudah terganggu
+- Terkeluar → Kreatif, berfikiran terbuka
+- Rapat ke kepala → Berdisiplin, konservatif
+
+═══════════════════════════════════════════════════════════════════════════════
+ANALISIS WAJAH DARI LLAVA (BACA DENGAN TELITI!)
+═══════════════════════════════════════════════════════════════════════════════
+${features}
+
+═══════════════════════════════════════════════════════════════════════════════
+PERATURAN KRITIKAL - WAJIB IKUT!
+═══════════════════════════════════════════════════════════════════════════════
+
+1. SIFAT POSITIF mesti DATANG DARI ciri wajah sebenar:
+   - Contoh: Jika dahi lebar → "Kebijaksanaan (dahi lebar menunjukkan...)"
+   - JANGAN buat sifat generik tanpa kaitan dengan wajah!
+
+2. SIFAT NEGATIF adalah KESAN SAMPINGAN sifat positif (BUKAN bertentangan!):
+   ✅ BETUL: Positif "Tegas" → Negatif "Kadang terlalu keras"
+   ✅ BETUL: Positif "Penyayang" → Negatif "Mudah tersentuh hati"
+   ❌ SALAH: Positif "Tenang" → Negatif "Pemarah" (BERCANGGAH!)
+   ❌ SALAH: Positif "Fokus" → Negatif "Tidak fokus" (BERCANGGAH!)
+
+3. SETIAP sifat mesti ada BUKTI dari ciri wajah:
+   - Nyatakan ciri mana yang menunjukkan sifat tersebut
+   - Gunakan perbandingan haiwan dari Kitab jika sesuai
+
+4. JANGAN ULANG sifat generik seperti:
+   - "Keseimbangan emosi" (terlalu umum)
+   - "Kebijaksanaan" (tanpa bukti spesifik)
+   - "Fokus" (tanpa kaitan ciri)
+
+═══════════════════════════════════════════════════════════════════════════════
+OUTPUT JSON - IKUT FORMAT INI DENGAN TEPAT
+═══════════════════════════════════════════════════════════════════════════════
+
+{
+  "translated_features": {
+    "dahi": {"description": "[Tafsiran berdasarkan ciri sebenar + perbandingan haiwan]", "arabic": "الجبهة"},
+    "mata": {"description": "[Tafsiran spesifik]", "arabic": "العينين"},
+    "hidung": {"description": "[Tafsiran spesifik]", "arabic": "الأنف"},
+    "mulut_bibir": {"description": "[Tafsiran spesifik]", "arabic": "الفم"},
+    "rahang_dagu": {"description": "[Tafsiran spesifik]", "arabic": "الذقن"},
+    "bentuk_wajah": {"description": "[Tafsiran spesifik]", "arabic": "الوجه"}
+  },
+  "character_interpretation": {
+    "positive_traits": [
+      "[Sifat 1] (dari [ciri wajah]) - [penjelasan dengan bukti]",
+      "[Sifat 2] (dari [ciri wajah]) - [penjelasan dengan bukti]",
+      "[Sifat 3] (dari [ciri wajah]) - [penjelasan dengan bukti]",
+      "[Sifat 4] (dari [ciri wajah]) - [penjelasan dengan bukti]"
+    ],
+    "negative_traits": [
+      "[Kesan sampingan sifat positif 1] - [nasihat membina]",
+      "[Kesan sampingan sifat positif 2] - [nasihat membina]",
+      "[Kesan sampingan sifat positif 3] - [nasihat membina]"
+    ],
+    "personality_type": "[Mizaj utama] - [penjelasan berdasarkan gabungan ciri]",
+    "overall_summary": "[5-6 ayat: Gambaran menyeluruh yang UNIK untuk wajah ini. Nyatakan kekuatan utama, cabaran spesifik, dan nasihat praktikal.]"
+  },
+  "kitab_references": [
+    {"feature": "[Ciri paling ketara]", "quote": "[Petikan relevan dari Kitab]", "arabic_term": "[istilah Arab]"}
+  ],
+  "disclaimer": "${lang.disclaimer}"
+}
+
+INGAT: Setiap orang UNIK. Tafsiran mesti SPESIFIK kepada ciri wajah yang dianalisis, bukan generik!
+Bahasa output: ${lang.name}`;
+}
+
+
+// Claude API
 async function callClaude(apiKey, prompt) {
   const response = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
@@ -191,8 +258,8 @@ async function callClaude(apiKey, prompt) {
     },
     body: JSON.stringify({
       model: 'claude-3-haiku-20240307',
-      max_tokens: 2500,
-      temperature: 0.2,  // Low temperature for consistency
+      max_tokens: 3000,
+      temperature: 0.3,
       messages: [{ role: 'user', content: prompt }]
     })
   });
@@ -211,7 +278,7 @@ async function callClaude(apiKey, prompt) {
   };
 }
 
-// Gemini API (Google)
+// Gemini API
 async function callGemini(apiKey, prompt) {
   const url = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
   
@@ -224,33 +291,24 @@ async function callGemini(apiKey, prompt) {
     body: JSON.stringify({
       contents: [{ parts: [{ text: prompt }] }],
       generationConfig: {
-        temperature: 0.2,  // Low temperature for consistency
-        maxOutputTokens: 2500
+        temperature: 0.3,
+        maxOutputTokens: 3000
       }
     })
   });
 
   if (!response.ok) {
     const errorText = await response.text();
-    console.log('Gemini API error:', response.status, errorText);
     throw new Error(`Gemini ${response.status}: ${errorText.substring(0, 200)}`);
   }
   
   const data = await response.json();
-  console.log('Gemini response received');
-  
   const content = data.candidates?.[0]?.content?.parts?.[0]?.text;
   
-  if (!content) {
-    console.log('Gemini no content in response');
-    throw new Error('Gemini: No content in response');
-  }
+  if (!content) throw new Error('Gemini: No content');
   
   const jsonMatch = content.match(/\{[\s\S]*\}/);
-  if (!jsonMatch) {
-    console.log('Gemini no JSON found in response');
-    throw new Error('Gemini: No JSON in response');
-  }
+  if (!jsonMatch) throw new Error('Gemini: No JSON');
   
   return {
     interpretation: JSON.parse(jsonMatch[0]),
@@ -272,8 +330,8 @@ async function callOpenAI(apiKey, prompt) {
     body: JSON.stringify({
       model: 'gpt-4o-mini',
       messages: [{ role: 'user', content: prompt }],
-      temperature: 0.2,  // Low temperature for consistency
-      max_tokens: 2500,
+      temperature: 0.3,
+      max_tokens: 3000,
       response_format: { type: "json_object" }
     })
   });
@@ -287,7 +345,7 @@ async function callOpenAI(apiKey, prompt) {
   };
 }
 
-// Extract key features from verbose LLaVA analysis
+// Extract key features
 function extractKeyFeatures(analysis) {
   if (analysis.length < 800) return analysis;
   
@@ -300,15 +358,17 @@ function extractKeyFeatures(analysis) {
     /\d+\.\s*(LIPS?|MOUTH|MULUT|BIBIR)[:\s]*([^0-9]*?)(?=\d+\.|$)/gi,
     /\d+\.\s*(FACE\s*SHAPE|WAJAH|BENTUK)[:\s]*([^0-9]*?)(?=\d+\.|$)/gi,
     /\d+\.\s*(JAW|CHIN|RAHANG|DAGU)[:\s]*([^0-9]*?)(?=\d+\.|$)/gi,
-    /\d+\.\s*(EARS?|TELINGA)[:\s]*([^0-9]*?)(?=\d+\.|$)/gi
+    /\d+\.\s*(CHEEK|PIPI)[:\s]*([^0-9]*?)(?=\d+\.|$)/gi,
+    /\d+\.\s*(EARS?|TELINGA)[:\s]*([^0-9]*?)(?=\d+\.|$)/gi,
+    /\d+\.\s*(HAIRLINE|RAMBUT)[:\s]*([^0-9]*?)(?=\d+\.|$)/gi
   ];
   
   for (const pattern of patterns) {
     const match = analysis.match(pattern);
     if (match && match[0]) {
-      features.push(match[0].trim().substring(0, 200));
+      features.push(match[0].trim().substring(0, 300));
     }
   }
   
-  return features.length > 0 ? features.join('\n\n') : analysis.substring(0, 1500);
+  return features.length > 0 ? features.join('\n\n') : analysis.substring(0, 2000);
 }
