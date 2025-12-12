@@ -44,6 +44,14 @@ function setupEventListeners() {
     // Analyze button
     document.getElementById('analyze-btn').addEventListener('click', analyzeWithWebhook);
     
+    // Language selector - update all UI labels
+    const languageSelect = document.getElementById('language-select');
+    if (languageSelect) {
+        languageSelect.addEventListener('change', updateUILabels);
+        // Initialize labels on load
+        updateUILabels();
+    }
+    
     // Theme toggle
     const themeToggle = document.getElementById('theme-toggle-btn');
     if (themeToggle) {
@@ -80,15 +88,126 @@ function setAnalysisMode(mode) {
         }
     });
     
-    // Update labels based on language
+    console.log(`Analysis mode set to: ${mode}`);
+}
+
+// Update all UI labels based on selected language
+function updateUILabels() {
     const language = document.getElementById('language-select')?.value || 'my';
+    
     const labels = {
-        my: { summary: 'Ringkasan Pantas', detailed: 'Analisis Penuh' },
-        en: { summary: 'Quick Summary', detailed: 'Full Analysis' },
-        id: { summary: 'Ringkasan Cepat', detailed: 'Analisis Lengkap' }
+        my: {
+            modeLabel: 'Mod Analisis:',
+            summary: 'Ringkasan Pantas',
+            summaryTime: '~5 saat',
+            detailed: 'Analisis Penuh',
+            detailedTime: '~15 saat',
+            analyzeBtn: 'Analisis Karakter',
+            dropTitle: 'Letakkan gambar di sini',
+            dropSubtitle: 'atau klik untuk pilih',
+            choosePhoto: 'Pilih Gambar',
+            tipsTitle: 'Tips untuk hasil terbaik:',
+            tips: [
+                '📸 Gunakan gambar depan yang jelas (seperti gambar pasport)',
+                '💡 Pencahayaan yang baik pada wajah',
+                '👤 Wajah penuh kelihatan (dahi hingga dagu)',
+                '🚫 Elakkan cermin mata hitam atau penutup muka'
+            ]
+        },
+        en: {
+            modeLabel: 'Analysis Mode:',
+            summary: 'Quick Summary',
+            summaryTime: '~5 sec',
+            detailed: 'Full Analysis',
+            detailedTime: '~15 sec',
+            analyzeBtn: 'Analyze Character',
+            dropTitle: 'Drop your photo here',
+            dropSubtitle: 'or click to browse',
+            choosePhoto: 'Choose Photo',
+            tipsTitle: 'Tips for best results:',
+            tips: [
+                '📸 Use a clear, front-facing photo (like passport photo)',
+                '💡 Good lighting on face',
+                '👤 Full face visible (forehead to chin)',
+                '🚫 Avoid sunglasses or face coverings'
+            ]
+        },
+        id: {
+            modeLabel: 'Mode Analisis:',
+            summary: 'Ringkasan Cepat',
+            summaryTime: '~5 detik',
+            detailed: 'Analisis Lengkap',
+            detailedTime: '~15 detik',
+            analyzeBtn: 'Analisis Karakter',
+            dropTitle: 'Letakkan gambar di sini',
+            dropSubtitle: 'atau klik untuk pilih',
+            choosePhoto: 'Pilih Gambar',
+            tipsTitle: 'Tips untuk hasil terbaik:',
+            tips: [
+                '📸 Gunakan foto depan yang jelas (seperti foto paspor)',
+                '💡 Pencahayaan yang baik pada wajah',
+                '👤 Wajah penuh terlihat (dahi hingga dagu)',
+                '🚫 Hindari kacamata hitam atau penutup wajah'
+            ]
+        }
     };
     
-    console.log(`Analysis mode set to: ${mode}`);
+    const lang = labels[language] || labels.my;
+    
+    // Update mode selector label
+    const modeSelectorLabel = document.querySelector('.analysis-mode-selector label');
+    if (modeSelectorLabel) {
+        modeSelectorLabel.innerHTML = `<i class="fas fa-sliders-h"></i> ${lang.modeLabel}`;
+    }
+    
+    // Update mode buttons
+    const summaryBtn = document.querySelector('.mode-btn[data-mode="summary"]');
+    const detailedBtn = document.querySelector('.mode-btn[data-mode="detailed"]');
+    
+    if (summaryBtn) {
+        summaryBtn.innerHTML = `
+            <i class="fas fa-bolt"></i>
+            <span>${lang.summary}</span>
+            <small>${lang.summaryTime}</small>
+        `;
+    }
+    
+    if (detailedBtn) {
+        detailedBtn.innerHTML = `
+            <i class="fas fa-microscope"></i>
+            <span>${lang.detailed}</span>
+            <small>${lang.detailedTime}</small>
+        `;
+    }
+    
+    // Update analyze button
+    const analyzeBtn = document.getElementById('analyze-btn');
+    if (analyzeBtn) {
+        analyzeBtn.innerHTML = `<i class="fas fa-search"></i> ${lang.analyzeBtn}`;
+    }
+    
+    // Update upload area text
+    const uploadContent = document.querySelector('.upload-content');
+    if (uploadContent) {
+        const h3 = uploadContent.querySelector('h3');
+        const p = uploadContent.querySelector('p');
+        const btn = uploadContent.querySelector('.btn-primary');
+        
+        if (h3) h3.textContent = lang.dropTitle;
+        if (p) p.textContent = lang.dropSubtitle;
+        if (btn) btn.textContent = lang.choosePhoto;
+        
+        // Update tips
+        const tipsTitle = uploadContent.querySelector('.photo-tips p strong');
+        const tipsList = uploadContent.querySelector('.photo-tips ul');
+        
+        if (tipsTitle) tipsTitle.textContent = lang.tipsTitle;
+        if (tipsList && lang.tips) {
+            tipsList.innerHTML = lang.tips.map(tip => `<li>${tip}</li>`).join('');
+        }
+    }
+    
+    console.log(`UI labels updated to: ${language}`);
 }
 
 // Load saved theme
@@ -822,9 +941,33 @@ async function generateStoryCard(interpretation) {
     ctx.textAlign = 'center';
     ctx.fillText('🔮 Firasah AI', 540, 150);
     
+    // Get language-specific labels
+    const language = document.getElementById('language-select')?.value || 'my';
+    const cardLabels = {
+        my: {
+            subtitle: 'Analisis Wajah Berdasarkan Kitab Firasat',
+            positive: '✨ Sifat Positif',
+            negative: '⚠️ Perlu Diperhatikan',
+            cta: 'Cuba analisis wajah anda!'
+        },
+        en: {
+            subtitle: 'Face Analysis Based on Kitab Firasat',
+            positive: '✨ Positive Traits',
+            negative: '⚠️ Traits to Watch',
+            cta: 'Try your face analysis!'
+        },
+        id: {
+            subtitle: 'Analisis Wajah Berdasarkan Kitab Firasat',
+            positive: '✨ Sifat Positif',
+            negative: '⚠️ Perlu Diperhatikan',
+            cta: 'Coba analisis wajah anda!'
+        }
+    };
+    const cardLang = cardLabels[language] || cardLabels.my;
+    
     ctx.fillStyle = '#888';
     ctx.font = '30px Inter, sans-serif';
-    ctx.fillText('Analisis Wajah Berdasarkan Kitab Firasat', 540, 210);
+    ctx.fillText(cardLang.subtitle, 540, 210);
     
     const ci = interpretation.character_interpretation;
     
@@ -857,7 +1000,7 @@ async function generateStoryCard(interpretation) {
     ctx.fillStyle = '#4CAF50';
     ctx.font = 'bold 32px Inter, sans-serif';
     ctx.textAlign = 'left';
-    ctx.fillText('✨ Sifat Positif', 100, y + 50);
+    ctx.fillText(cardLang.positive, 100, y + 50);
     
     ctx.fillStyle = '#ccc';
     ctx.font = '26px Inter, sans-serif';
@@ -875,7 +1018,7 @@ async function generateStoryCard(interpretation) {
     
     ctx.fillStyle = '#FF9800';
     ctx.font = 'bold 32px Inter, sans-serif';
-    ctx.fillText('⚠️ Perlu Diperhatikan', 100, y + 50);
+    ctx.fillText(cardLang.negative, 100, y + 50);
     
     ctx.fillStyle = '#ccc';
     ctx.font = '26px Inter, sans-serif';
@@ -897,7 +1040,7 @@ async function generateStoryCard(interpretation) {
     
     ctx.fillStyle = '#888';
     ctx.font = '28px Inter, sans-serif';
-    ctx.fillText('Cuba analisis wajah anda!', 540, 1810);
+    ctx.fillText(cardLang.cta, 540, 1810);
     
     return canvas.toDataURL('image/png');
 }
