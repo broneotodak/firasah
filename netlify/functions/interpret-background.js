@@ -161,7 +161,7 @@ function getLangConfig(lang) {
   }[lang] || getLangConfig('my');
 }
 
-// Build prompt with CLEAR examples
+// Build prompt with CLEAR examples - ALL features required
 function buildPrompt(features, lang) {
   const isMyId = lang.name.includes('Melayu') || lang.name.includes('Indonesia');
   
@@ -172,90 +172,129 @@ CIRI WAJAH DIKESAN:
 ${features}
 
 PERATURAN PENTING:
-1. Setiap ciri wajah mesti ada TAFSIRAN PENUH (2-3 ayat tentang maksud personaliti)
+1. WAJIB isi SEMUA 10 ciri wajah dengan tafsiran penuh (2-3 ayat setiap satu)
 2. Sifat negatif = KESAN SAMPINGAN sifat positif (BUKAN bertentangan!)
-   ✓ Betul: Tegas → Kadang terlalu keras
-   ✗ Salah: Tenang → Pemarah
+3. Berikan 3-4 rujukan Kitab Firasat yang berbeza
 
-CONTOH OUTPUT YANG BETUL:
+WAJIB OUTPUT JSON DENGAN FORMAT INI:
 {
   "features": {
-    "dahi": "Dahi yang sederhana lebar menunjukkan keseimbangan pemikiran. Menurut Kitab Firasat, ini petanda seseorang yang bijak membuat keputusan tanpa tergesa-gesa.",
-    "mata": "Mata yang tajam dan fokus seperti elang menandakan ketelitian tinggi. Pemilik mata sebegini biasanya pemerhati yang baik dan sukar ditipu.",
-    "hidung": "Hidung yang sederhana mancung menunjukkan keyakinan diri yang sihat. Tidak sombong tetapi tahu nilai diri sendiri.",
-    "mulut": "Bibir yang sederhana tebal menandakan kesetiaan dan kasih sayang. Orang sebegini biasanya setia dalam perhubungan.",
-    "rahang": "Rahang yang tegas menunjukkan ketabahan menghadapi cabaran. Tidak mudah berputus asa.",
-    "wajah": "Bentuk wajah oval menandakan keseimbangan antara logik dan emosi. Diplomatis dalam pergaulan."
+    "dahi": "[2-3 ayat tafsiran dahi - saiz, bentuk, dan maksud personaliti]",
+    "kening": "[2-3 ayat tafsiran kening - ketebalan, bentuk, jarak]",
+    "mata": "[2-3 ayat tafsiran mata - saiz, bentuk, pandangan]",
+    "hidung": "[2-3 ayat tafsiran hidung - panjang, lebar, bentuk hujung]",
+    "mulut": "[2-3 ayat tafsiran mulut & bibir - ketebalan, lebar]",
+    "pipi": "[2-3 ayat tafsiran pipi - bentuk tulang pipi]",
+    "rahang": "[2-3 ayat tafsiran rahang & dagu - ketegasan, bentuk]",
+    "telinga": "[2-3 ayat tafsiran telinga - saiz, kedudukan]",
+    "wajah": "[2-3 ayat tafsiran bentuk wajah keseluruhan]",
+    "rambut": "[2-3 ayat tafsiran garis rambut - tinggi, bentuk]"
   },
   "positive": [
-    "Kebijaksanaan (dari dahi sederhana) - Mampu berfikir sebelum bertindak",
-    "Ketelitian (dari mata tajam) - Pemerhati yang baik, tidak mudah terlepas pandang",
-    "Keyakinan Diri (dari hidung mancung) - Yakin dengan kemampuan sendiri",
-    "Kesetiaan (dari bibir penuh) - Setia dan boleh dipercayai"
+    "Sifat 1 (dari ciri wajah) - penjelasan kekuatan",
+    "Sifat 2 (dari ciri wajah) - penjelasan kekuatan",
+    "Sifat 3 (dari ciri wajah) - penjelasan kekuatan",
+    "Sifat 4 (dari ciri wajah) - penjelasan kekuatan",
+    "Sifat 5 (dari ciri wajah) - penjelasan kekuatan"
   ],
   "negative": [
-    "Terlalu berhati-hati - Kadang lambat membuat keputusan kerana terlalu menganalisis",
-    "Terlalu teliti - Boleh menjadi kritikal terhadap kesilapan kecil orang lain",
-    "Degil - Keyakinan diri yang tinggi kadang menjadi keras kepala"
+    "Kesan sampingan 1 - nasihat membina",
+    "Kesan sampingan 2 - nasihat membina",
+    "Kesan sampingan 3 - nasihat membina"
   ],
-  "type": "Melankolis-Koleris - Pemikir yang tegas, teliti tetapi kadang terlalu serius",
-  "summary": "Individu ini memiliki gabungan kebijaksanaan dan ketegasan yang jarang ditemui. Dahi yang seimbang menunjukkan pemikiran yang matang, manakala mata yang tajam menjadikannya pemerhati yang baik. Dalam perhubungan, kesetiaan adalah kekuatan utama. Cabaran utama adalah belajar untuk tidak terlalu kritikal dan lebih fleksibel.",
-  "ref": {"quote": "Dahi yang sederhana adalah tanda akal yang seimbang dan hati yang tenang", "feature": "Dahi"}
+  "type": "Jenis Personaliti - penjelasan temperamen",
+  "summary": "5-6 ayat gambaran unik individu ini berdasarkan gabungan semua ciri wajah.",
+  "refs": [
+    {"feature": "Dahi", "quote": "Petikan Kitab Firasat tentang dahi"},
+    {"feature": "Mata", "quote": "Petikan Kitab Firasat tentang mata"},
+    {"feature": "Hidung", "quote": "Petikan Kitab Firasat tentang hidung"},
+    {"feature": "Rahang", "quote": "Petikan Kitab Firasat tentang rahang"}
+  ]
 }
 
-SEKARANG, beri tafsiran untuk wajah ini. JSON sahaja:`;
+PENTING: Isi SEMUA 10 ciri wajah! Jangan tinggalkan mana-mana. JSON sahaja:`;
   }
   
-  return `You are a Kitab Firasat expert. Analyze this face and provide MEANINGFUL interpretation in English.
+  return `You are a Kitab Firasat expert. Analyze this face with COMPLETE interpretation in English.
 
 DETECTED FACIAL FEATURES:
 ${features}
 
 IMPORTANT RULES:
-1. Each feature must have FULL INTERPRETATION (2-3 sentences about personality meaning)
+1. MUST fill ALL 10 facial features with full interpretation (2-3 sentences each)
 2. Negative traits = SIDE EFFECTS of positives (NOT opposites!)
-   ✓ Correct: Firm → Sometimes too strict
-   ✗ Wrong: Calm → Angry
+3. Provide 3-4 different Kitab Firasat references
 
-EXAMPLE OF CORRECT OUTPUT:
+REQUIRED JSON FORMAT:
 {
   "features": {
-    "dahi": "A moderately wide forehead indicates balanced thinking. According to Kitab Firasat, this is a sign of someone who makes wise decisions without rushing.",
-    "mata": "Sharp, focused eyes like an eagle indicate high attention to detail. Such eyes usually belong to good observers who are hard to deceive.",
-    "hidung": "A moderately prominent nose shows healthy self-confidence. Not arrogant but knows their own worth.",
-    "mulut": "Moderately full lips indicate loyalty and affection. Such people are usually faithful in relationships.",
-    "rahang": "A firm jaw shows resilience in facing challenges. Not easily discouraged.",
-    "wajah": "An oval face shape indicates balance between logic and emotion. Diplomatic in social interactions."
+    "dahi": "[2-3 sentences about forehead - size, shape, personality meaning]",
+    "kening": "[2-3 sentences about eyebrows - thickness, shape, spacing]",
+    "mata": "[2-3 sentences about eyes - size, shape, gaze]",
+    "hidung": "[2-3 sentences about nose - length, width, tip shape]",
+    "mulut": "[2-3 sentences about mouth & lips - thickness, width]",
+    "pipi": "[2-3 sentences about cheeks - cheekbone shape]",
+    "rahang": "[2-3 sentences about jaw & chin - firmness, shape]",
+    "telinga": "[2-3 sentences about ears - size, position]",
+    "wajah": "[2-3 sentences about overall face shape]",
+    "rambut": "[2-3 sentences about hairline - height, shape]"
   },
   "positive": [
-    "Wisdom (from balanced forehead) - Able to think before acting",
-    "Attention to Detail (from sharp eyes) - Good observer, doesn't miss things easily",
-    "Self-Confidence (from prominent nose) - Confident in own abilities",
-    "Loyalty (from full lips) - Faithful and trustworthy"
+    "Trait 1 (from facial feature) - strength explanation",
+    "Trait 2 (from facial feature) - strength explanation",
+    "Trait 3 (from facial feature) - strength explanation",
+    "Trait 4 (from facial feature) - strength explanation",
+    "Trait 5 (from facial feature) - strength explanation"
   ],
   "negative": [
-    "Overly cautious - Sometimes slow to decide due to over-analysis",
-    "Too detail-oriented - Can become critical of others' small mistakes",
-    "Stubborn - High self-confidence sometimes becomes inflexibility"
+    "Side effect 1 - constructive advice",
+    "Side effect 2 - constructive advice",
+    "Side effect 3 - constructive advice"
   ],
-  "type": "Melancholic-Choleric - A firm thinker, meticulous but sometimes too serious",
-  "summary": "This individual possesses a rare combination of wisdom and firmness. The balanced forehead shows mature thinking, while sharp eyes make them a good observer. In relationships, loyalty is their main strength. The main challenge is learning not to be too critical and to be more flexible.",
-  "ref": {"quote": "A balanced forehead is a sign of balanced intellect and a calm heart", "feature": "Forehead"}
+  "type": "Personality Type - temperament explanation",
+  "summary": "5-6 sentences unique portrait of this individual based on all facial features combined.",
+  "refs": [
+    {"feature": "Forehead", "quote": "Kitab Firasat quote about forehead"},
+    {"feature": "Eyes", "quote": "Kitab Firasat quote about eyes"},
+    {"feature": "Nose", "quote": "Kitab Firasat quote about nose"},
+    {"feature": "Jaw", "quote": "Kitab Firasat quote about jaw"}
+  ]
 }
 
-NOW, provide interpretation for this face. JSON only:`;
+IMPORTANT: Fill ALL 10 facial features! Do not skip any. JSON only:`;
 }
 
-// Transform compact result to frontend format
+// Transform compact result to frontend format - ALL 10 features
 function transformResult(r, lang) {
-  const arabic = { dahi: 'الجبهة', mata: 'العينين', hidung: 'الأنف', mulut: 'الفم', rahang: 'الذقن', wajah: 'الوجه' };
-  const keys = { dahi: 'dahi', mata: 'mata', hidung: 'hidung', mulut: 'mulut_bibir', rahang: 'rahang_dagu', wajah: 'bentuk_wajah' };
+  const arabic = { 
+    dahi: 'الجبهة', kening: 'الحواجب', mata: 'العينين', hidung: 'الأنف', 
+    mulut: 'الفم', pipi: 'الخدين', rahang: 'الذقن', telinga: 'الأذن', 
+    wajah: 'الوجه', rambut: 'خط الشعر' 
+  };
+  const keys = { 
+    dahi: 'dahi', kening: 'kening', mata: 'mata', hidung: 'hidung', 
+    mulut: 'mulut_bibir', pipi: 'pipi', rahang: 'rahang_dagu', 
+    telinga: 'telinga', wajah: 'bentuk_wajah', rambut: 'garis_rambut' 
+  };
   
   const translated_features = {};
   if (r.features) {
     for (const [k, v] of Object.entries(r.features)) {
-      translated_features[keys[k] || k] = { description: v, arabic: arabic[k] || '' };
+      const key = keys[k] || k;
+      translated_features[key] = { description: v, arabic: arabic[k] || '' };
     }
+  }
+
+  // Handle both "ref" (old) and "refs" (new) format
+  let kitab_references = [];
+  if (r.refs && Array.isArray(r.refs)) {
+    kitab_references = r.refs.map(ref => ({
+      feature: ref.feature || '',
+      quote: ref.quote || '',
+      arabic_term: ''
+    }));
+  } else if (r.ref) {
+    kitab_references = [{ feature: r.ref.feature || '', quote: r.ref.quote || '', arabic_term: '' }];
   }
 
   return {
@@ -266,7 +305,7 @@ function transformResult(r, lang) {
       personality_type: r.type || '',
       overall_summary: r.summary || ''
     },
-    kitab_references: r.ref ? [{ feature: r.ref.feature || '', quote: r.ref.quote || '', arabic_term: '' }] : [],
+    kitab_references,
     disclaimer: getLangConfig(lang).disclaimer
   };
 }
