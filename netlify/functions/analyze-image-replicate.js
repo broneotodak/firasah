@@ -1,26 +1,105 @@
 // netlify/functions/analyze-image-replicate.js
+// Enhanced Kitab Firasat Prompt - Version 2.0 (Fallback/Direct Method)
+
 const Replicate = require("replicate");
 
+// ENHANCED KITAB FIRASAT PROMPT - Same as webhook version for consistency
+const KITAB_FIRASAT_PROMPT = `You are an expert in classical Islamic physiognomy (Ilmu Firasat / علم الفراسة). 
+Analyze this face image with the precision of a traditional Kitab Firasat scholar.
+
+CRITICAL: Provide UNIQUE, DETAILED descriptions. Do NOT use generic phrases.
+
+═══════════════════════════════════════════════════════════════════════════════
+1. FOREHEAD (الجبهة - Jabhah)
+═══════════════════════════════════════════════════════════════════════════════
+Describe: HEIGHT (very high/high/medium/low), WIDTH (broad/medium/narrow), 
+SHAPE (rounded/flat/convex/sloped), SURFACE (smooth/lined/furrowed), 
+TEMPLES (prominent/flat/sunken), BROW RIDGE visibility.
+
+═══════════════════════════════════════════════════════════════════════════════
+2. EYEBROWS (الحواجب - Al-Hawajib)
+═══════════════════════════════════════════════════════════════════════════════
+Describe: THICKNESS (bushy/thick/medium/thin/sparse), SHAPE (straight/arched/angled/S-curved),
+LENGTH (long/medium/short), SPACING (close/moderate/wide), POSITION (high/medium/low above eyes),
+TEXTURE (dense/feathered/sparse), TAIL direction and shape.
+
+═══════════════════════════════════════════════════════════════════════════════
+3. EYES (العينان - Al-'Aynayn)
+═══════════════════════════════════════════════════════════════════════════════
+Describe: SIZE (large/medium/small), SHAPE (round/almond/hooded/upturned/downturned/deep-set/protruding),
+SET (wide-set/normal/close-set), DEPTH (deep-set/average/protruding), 
+UPPER EYELID (heavy/medium/light fold), LOWER EYELID condition, 
+EYE CORNERS (inner and outer), GAZE direction, EXPRESSION quality.
+
+═══════════════════════════════════════════════════════════════════════════════
+4. NOSE (الأنف - Al-Anf)
+═══════════════════════════════════════════════════════════════════════════════
+Describe: LENGTH (long/medium/short), BRIDGE (high/medium/low/humped/straight/curved),
+TIP SHAPE (bulbous/round/pointed/upturned/downturned/hooked), TIP SIZE,
+NOSTRILS (wide/medium/narrow/flared), ROOT width, 
+OVERALL TYPE (Roman/Greek/Nubian/Snub/Aquiline/Button/Hawk).
+
+═══════════════════════════════════════════════════════════════════════════════
+5. LIPS & MOUTH (الفم والشفتان - Al-Fam wa Al-Shafatan)
+═══════════════════════════════════════════════════════════════════════════════
+Describe: UPPER LIP (very full/full/medium/thin), LOWER LIP fullness,
+LIP RATIO (which is fuller and by how much), CUPID'S BOW (defined/soft/flat),
+LIP WIDTH (wide/medium/narrow), CORNERS (upturned/straight/downturned),
+PHILTRUM (deep/shallow, long/short, wide/narrow), LIP COLOR relative to skin,
+MOUTH POSITION (forward/neutral/recessed), EXPRESSION, TEETH visibility.
+
+═══════════════════════════════════════════════════════════════════════════════
+6. JAWLINE & CHIN (الذقن والفك - Al-Diqn wa Al-Fakk)
+═══════════════════════════════════════════════════════════════════════════════
+Describe: JAWLINE SHAPE (square/angular/round/soft/sharp), DEFINITION level,
+JAW WIDTH and ANGLE, CHIN SHAPE (square/round/pointed/cleft/dimpled),
+CHIN SIZE (prominent/medium/receding), CHIN PROJECTION direction.
+
+═══════════════════════════════════════════════════════════════════════════════
+7. CHEEKBONES (الخد - Al-Khadd)
+═══════════════════════════════════════════════════════════════════════════════
+Describe: PROMINENCE (very prominent/moderate/flat/sunken), HEIGHT (high/medium/low),
+WIDTH contribution, DEFINITION (sharp/soft/subtle), CHEEK HOLLOW presence,
+FULLNESS below cheekbones, SYMMETRY level.
+
+═══════════════════════════════════════════════════════════════════════════════
+8. EARS (الأذنان - Al-Udzun)
+═══════════════════════════════════════════════════════════════════════════════
+Describe: SIZE (large/medium/small), POSITION (high/level/low), 
+PROTRUSION (close to head/moderate/prominent), SHAPE (round/oval/rectangular/pointed),
+LOBE (attached/free, long/short, fleshy/thin), VISIBILITY.
+
+═══════════════════════════════════════════════════════════════════════════════
+9. FACE SHAPE (الوجه - Al-Wajh)
+═══════════════════════════════════════════════════════════════════════════════
+Describe: PRIMARY SHAPE (oval/round/square/rectangular/heart/diamond/oblong/triangle),
+PROPORTIONS (upper vs lower face width), LENGTH vs WIDTH ratio,
+FACIAL THIRDS balance, SYMMETRY level, ANGULARITY, OVERALL IMPRESSION.
+
+═══════════════════════════════════════════════════════════════════════════════
+10. HAIRLINE (الشعر - Al-Sha'r)
+═══════════════════════════════════════════════════════════════════════════════
+Describe: PRESENCE (full/receding/balding/bald/shaved), SHAPE (straight/M-shaped/widow's peak/rounded),
+HEIGHT (high/medium/low), CORNERS recession, DENSITY at front, 
+HAIR TEXTURE and COLOR if visible.
+
+═══════════════════════════════════════════════════════════════════════════════
+OUTPUT: Number each section 1-10. Be SPECIFIC. Describe EXACTLY what you observe.
+Keep tone neutral. This is for Kitab Firasat character analysis.`;
+
 exports.handler = async (event, context) => {
-  console.log('=== Function Started ===');
+  console.log('=== Function Started (Direct/Fallback Method) ===');
   
-  // CORS headers
   const headers = {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Headers': 'Content-Type',
     'Access-Control-Allow-Methods': 'POST, OPTIONS'
   };
 
-  // Handle preflight requests
   if (event.httpMethod === 'OPTIONS') {
-    return {
-      statusCode: 200,
-      headers,
-      body: ''
-    };
+    return { statusCode: 200, headers, body: '' };
   }
 
-  // Only allow POST
   if (event.httpMethod !== 'POST') {
     return {
       statusCode: 405,
@@ -42,44 +121,15 @@ exports.handler = async (event, context) => {
     }
 
     console.log('2. Image received, size:', image.length, 'characters');
-    console.log('3. Token exists:', !!process.env.REPLICATE_API_TOKEN);
     
-    // Initialize Replicate
-    console.log('4. Initializing Replicate client...');
     const replicate = new Replicate({
       auth: process.env.REPLICATE_API_TOKEN,
     });
-    console.log('5. Replicate client initialized');
 
-    // Kitab Firasat classical physiognomy prompt
-    const prompt = `Please analyze this face image in detail for the purpose of classical character reading (Ilmu Firasat). Focus only on the following facial features and describe them neutrally and structurally, without modern beauty judgment. Your analysis should help deduce personality traits based on the shape, size, position, and impression of each part:
-
-1. FOREHEAD (Jabhah): Describe the size, width, height, and any natural wrinkles. Is it broad, narrow, or furrowed?
-
-2. EYEBROWS (Al-Hawajib): Describe the thickness, arch/shape, and distance from the eyes. Are they close together or far apart?
-
-3. EYES (Al-'Aynayn): Describe the size (big/small), shape (round/sharp), gaze direction (direct/squinting/downward), and eyelid posture.
-
-4. NOSE (Al-Anf): Describe the nose bridge, tip shape, and nostril size. Is it sharp, broad, flat, hooked?
-
-5. LIPS & MOUTH (Al-Fam): Describe the lip thickness (thin/thick), mouth width (wide/narrow), and natural expression (neutral/smiling/pressed).
-
-6. JAWLINE & CHIN (Al-Diqn): Describe the shape of the jaw (wide/narrow/strong) and chin (pointed, round, flat).
-
-7. CHEEKBONES (Al-Khadd): Describe whether cheekbones are prominent or flat. Note height and structure.
-
-8. EARS (Al-Udzun): Describe the size, position (close to head or sticking out), and overall impression.
-
-9. FACE SHAPE (Wajh): Describe the overall shape of the face: round, oval, square, heart-shaped, etc.
-
-10. HAIRLINE (Sha'r): If visible, describe the hairline shape, such as straight, M-shaped, widow's peak (V-shaped), etc.
-
-Output each section clearly. This analysis is meant to match classical 'Kitab Firasat' methodology, so keep tone descriptive, structural, and free from cultural or cosmetic bias.`;
-
-    console.log('6. Starting Replicate API call...');
+    console.log('3. Starting Replicate API call with ENHANCED prompt...');
     const startTime = Date.now();
     
-    // Run the model with timeout
+    // Run with timeout
     const timeoutPromise = new Promise((_, reject) => 
       setTimeout(() => reject(new Error('Replicate timeout after 9 seconds')), 9000)
     );
@@ -92,40 +142,32 @@ Output each section clearly. This analysis is meant to match classical 'Kitab Fi
           {
             input: {
               image: image,
-              prompt: prompt,
-              max_tokens: 1024,
-              temperature: 0.2,
-              top_p: 1
+              prompt: KITAB_FIRASAT_PROMPT,
+              max_tokens: 2048,  // Increased for detailed output
+              temperature: 0.4,  // Slightly higher for varied descriptions
+              top_p: 0.95
             }
           }
         ),
         timeoutPromise
       ]);
-      
-      console.log('7. Raw output type:', typeof output);
-      console.log('7a. Raw output:', JSON.stringify(output).slice(0, 200) + '...');
     } catch (replicateError) {
-      console.error('7b. Replicate API error:', replicateError);
+      console.error('Replicate API error:', replicateError);
       throw replicateError;
     }
 
     const duration = Date.now() - startTime;
-    console.log('8. Analysis complete in', duration, 'ms');
+    console.log('4. Analysis complete in', duration, 'ms');
 
-    // Format the response - handle both array and string outputs
+    // Format response
     let analysis;
     if (Array.isArray(output)) {
-      console.log('9. Output is array with', output.length, 'items');
       analysis = output.join('');
     } else if (typeof output === 'string') {
-      console.log('9. Output is string');
       analysis = output;
     } else {
-      console.log('9. Unexpected output type:', typeof output);
       analysis = JSON.stringify(output);
     }
-    
-    console.log('10. Final analysis length:', analysis.length);
 
     return {
       statusCode: 200,
@@ -133,16 +175,14 @@ Output each section clearly. This analysis is meant to match classical 'Kitab Fi
       body: JSON.stringify({
         success: true,
         analysis: analysis,
-        model: "LLaVA v1.5 13B - Kitab Firasat Analysis",
+        model: "LLaVA v1.5 13B - Enhanced Kitab Firasat Analysis v2.0",
         duration: duration
       })
     };
 
   } catch (error) {
     console.error('=== ERROR ===');
-    console.error('Error type:', error.constructor.name);
-    console.error('Error message:', error.message);
-    console.error('Error stack:', error.stack);
+    console.error('Error:', error.message);
     
     return {
       statusCode: 500,
