@@ -971,24 +971,35 @@ async function generateStoryCard(interpretation) {
     
     const ci = interpretation.character_interpretation;
     
-    // Personality Type Box
+    // Personality Type Box - with text wrapping
     ctx.fillStyle = 'rgba(157, 78, 221, 0.2)';
-    roundRect(ctx, 60, 280, 960, 120, 20);
+    roundRect(ctx, 60, 280, 960, 140, 20);
     ctx.fill();
     
     ctx.fillStyle = '#fff';
-    ctx.font = 'bold 36px Inter, sans-serif';
-    ctx.fillText('🎭 ' + (ci.personality_type || 'Personaliti Unik'), 540, 355);
+    ctx.font = 'bold 32px Inter, sans-serif';
+    ctx.textAlign = 'center';
+    
+    // Truncate personality type to fit
+    let personalityType = ci.personality_type || 'Personaliti Unik';
+    if (personalityType.length > 60) {
+        personalityType = personalityType.substring(0, 57) + '...';
+    }
+    // Split into 2 lines if needed
+    const typeLines = wrapText(ctx, '🎭 ' + personalityType, 900);
+    typeLines.slice(0, 2).forEach((line, i) => {
+        ctx.fillText(line, 540, 340 + (i * 40));
+    });
     
     // Summary
     ctx.fillStyle = '#ddd';
     ctx.font = '28px Inter, sans-serif';
     const summary = ci.overall_summary || '';
     const summaryLines = wrapText(ctx, summary, 900);
-    let y = 480;
-    summaryLines.slice(0, 6).forEach(line => {
+    let y = 500;
+    summaryLines.slice(0, 5).forEach(line => {
         ctx.fillText(line, 540, y);
-        y += 45;
+        y += 42;
     });
     
     // Positive Traits Box
@@ -1006,7 +1017,10 @@ async function generateStoryCard(interpretation) {
     ctx.font = '26px Inter, sans-serif';
     const positives = ci.positive_traits || [];
     positives.slice(0, 5).forEach((trait, i) => {
-        const shortTrait = trait.length > 50 ? trait.substring(0, 47) + '...' : trait;
+        // Get just the trait name (before the dash explanation)
+        const traitParts = trait.split(' - ');
+        const traitName = traitParts[0] || trait;
+        const shortTrait = traitName.length > 45 ? traitName.substring(0, 42) + '...' : traitName;
         ctx.fillText('• ' + shortTrait, 100, y + 100 + (i * 55));
     });
     
@@ -1024,7 +1038,10 @@ async function generateStoryCard(interpretation) {
     ctx.font = '26px Inter, sans-serif';
     const negatives = ci.negative_traits || [];
     negatives.slice(0, 3).forEach((trait, i) => {
-        const shortTrait = trait.length > 50 ? trait.substring(0, 47) + '...' : trait;
+        // Get just the trait name (before the dash explanation)
+        const traitParts = trait.split(' - ');
+        const traitName = traitParts[0] || trait;
+        const shortTrait = traitName.length > 45 ? traitName.substring(0, 42) + '...' : traitName;
         ctx.fillText('• ' + shortTrait, 100, y + 100 + (i * 55));
     });
     

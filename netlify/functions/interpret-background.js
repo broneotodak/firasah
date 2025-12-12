@@ -166,51 +166,75 @@ function getLangConfig(lang) {
 function buildPrompt(features, lang, mode = 'summary') {
   const isMyId = lang.name.includes('Melayu') || lang.name.includes('Indonesia');
   
-  // SUMMARY MODE - Quick analysis, fewer tokens
+  // SUMMARY MODE - Quick but quality analysis
   if (mode === 'summary') {
     if (isMyId) {
-      return `Anda pakar Kitab Firasat. Beri RINGKASAN PANTAS analisis wajah dalam Bahasa Melayu.
+      return `Anda pakar Kitab Firasat yang berpengalaman. Beri analisis RINGKAS tetapi BERKUALITI dalam Bahasa Melayu.
 
-CIRI WAJAH:
+CIRI WAJAH DIKESAN:
 ${features}
 
-PERATURAN:
-1. Fokus pada ciri PALING MENONJOL sahaja (3-4 ciri utama)
-2. Sifat negatif = KESAN SAMPINGAN positif (BUKAN bertentangan!)
-3. Ringkas tetapi bermakna
+PERATURAN PENTING:
+1. Fokus pada 4-5 ciri PALING MENONJOL yang membentuk personaliti unik
+2. Setiap sifat positif mesti ada penjelasan BERMAKNA (bukan sekadar label)
+3. Sifat negatif = KESAN SAMPINGAN sifat positif (BUKAN bertentangan!)
+   ✓ Betul: Keyakinan tinggi → Kadang boleh kelihatan sombong
+   ✗ Salah: Tegas → Pemalu
+4. Summary mesti gambaran UNIK dan SPESIFIK untuk wajah ini
+5. Rujuk ciri fizikal spesifik dalam penjelasan (dahi tinggi, mata tajam, dll)
 
-OUTPUT JSON:
+CONTOH OUTPUT BERKUALITI:
 {
-  "positive": ["Sifat 1 - penjelasan singkat", "Sifat 2 - penjelasan singkat", "Sifat 3 - penjelasan singkat"],
-  "negative": ["Kesan sampingan 1 - nasihat", "Kesan sampingan 2 - nasihat"],
-  "type": "Jenis Personaliti - penjelasan ringkas",
-  "summary": "3-4 ayat gambaran unik individu ini.",
-  "refs": [{"feature": "Ciri utama", "quote": "Petikan Kitab Firasat"}]
+  "positive": [
+    "Kebijaksanaan (dahi tinggi dan lebar) - Mampu berfikir mendalam dan melihat gambaran besar",
+    "Keyakinan Diri (kening tebal lurus) - Tegas dalam pendirian dan tidak mudah dipengaruhi",
+    "Ketelitian (mata fokus dan tajam) - Pemerhati yang baik, sukar ditipu",
+    "Empati (bibir sederhana tebal) - Memahami perasaan orang lain dengan baik"
+  ],
+  "negative": [
+    "Terlalu serius - Kadang perlu rileks dan lebih santai dalam pergaulan",
+    "Perfeksionis - Boleh terlalu kritikal terhadap diri sendiri dan orang lain"
+  ],
+  "type": "Pemikir Strategik - Gabungan kebijaksanaan dengan keyakinan diri yang kuat",
+  "summary": "Individu ini memiliki aura kepimpinan semulajadi yang terserlah dari dahi tinggi dan kening tegas. Mata yang tajam menunjukkan ketelitian tinggi, menjadikannya pemerhati yang bijak. Rahang yang tegas mencerminkan ketabahan menghadapi cabaran. Walau bagaimanapun, sifat serius ini perlu diimbangi dengan kelembutan agar hubungan interpersonal lebih harmoni.",
+  "refs": [{"feature": "Dahi", "quote": "Dahi yang tinggi adalah tanda akal yang tajam dan fikiran yang jauh"}]
 }
 
-JSON sahaja:`;
+SEKARANG, analisis wajah ini. JSON sahaja:`;
     }
     
-    return `You are a Kitab Firasat expert. Give QUICK SUMMARY of this face analysis.
+    return `You are an experienced Kitab Firasat expert. Provide a CONCISE but QUALITY analysis in English.
 
-FACIAL FEATURES:
+DETECTED FACIAL FEATURES:
 ${features}
 
-RULES:
-1. Focus on MOST PROMINENT features only (3-4 main features)
-2. Negative = SIDE EFFECTS of positives (NOT opposites!)
-3. Brief but meaningful
+IMPORTANT RULES:
+1. Focus on 4-5 MOST PROMINENT features that shape unique personality
+2. Each positive trait must have MEANINGFUL explanation (not just labels)
+3. Negative traits = SIDE EFFECTS of positives (NOT opposites!)
+   ✓ Correct: High confidence → Sometimes appears arrogant
+   ✗ Wrong: Firm → Shy
+4. Summary must be UNIQUE and SPECIFIC to this face
+5. Reference specific physical features in explanations (high forehead, sharp eyes, etc.)
 
-OUTPUT JSON:
+EXAMPLE QUALITY OUTPUT:
 {
-  "positive": ["Trait 1 - brief explanation", "Trait 2 - brief explanation", "Trait 3 - brief explanation"],
-  "negative": ["Side effect 1 - advice", "Side effect 2 - advice"],
-  "type": "Personality Type - brief explanation",
-  "summary": "3-4 sentences unique portrait.",
-  "refs": [{"feature": "Main feature", "quote": "Kitab Firasat quote"}]
+  "positive": [
+    "Wisdom (high and wide forehead) - Capable of deep thinking and seeing the big picture",
+    "Self-Confidence (thick straight eyebrows) - Firm in stance and not easily influenced",
+    "Attention to Detail (focused sharp eyes) - Good observer, hard to deceive",
+    "Empathy (moderately full lips) - Understands others' feelings well"
+  ],
+  "negative": [
+    "Too serious - Sometimes needs to relax and be more casual in social settings",
+    "Perfectionist - Can be overly critical of self and others"
+  ],
+  "type": "Strategic Thinker - Combines wisdom with strong self-confidence",
+  "summary": "This individual has a natural leadership aura evident from their high forehead and firm eyebrows. Sharp eyes indicate high attention to detail, making them a wise observer. The firm jaw reflects resilience in facing challenges. However, this serious nature needs to be balanced with gentleness for more harmonious interpersonal relationships.",
+  "refs": [{"feature": "Forehead", "quote": "A high forehead is a sign of sharp intellect and far-sighted thinking"}]
 }
 
-JSON only:`;
+NOW, analyze this face. JSON only:`;
   }
   
   // DETAILED MODE - Full analysis with all 10 features
@@ -359,12 +383,12 @@ function transformResult(r, lang) {
   };
 }
 
-// API Calls
+// API Calls - temperature=0 for consistent results
 async function callGemini(prompt) {
   const r = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'X-goog-api-key': process.env.GEMINI_API_KEY },
-    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], generationConfig: { temperature: 0.25, maxOutputTokens: 1200 } })
+    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], generationConfig: { temperature: 0, maxOutputTokens: 2000 } })
   });
   if (!r.ok) throw new Error(`Gemini ${r.status}`);
   const d = await r.json();
@@ -376,7 +400,7 @@ async function callOpenAI(prompt) {
   const r = await fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
     headers: { 'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ model: 'gpt-4o-mini', messages: [{ role: 'user', content: prompt }], temperature: 0.25, max_tokens: 1200, response_format: { type: "json_object" } })
+    body: JSON.stringify({ model: 'gpt-4o-mini', messages: [{ role: 'user', content: prompt }], temperature: 0, max_tokens: 2000, response_format: { type: "json_object" } })
   });
   if (!r.ok) throw new Error(`OpenAI ${r.status}`);
   return JSON.parse((await r.json()).choices[0].message.content);
@@ -386,7 +410,7 @@ async function callClaude(prompt) {
   const r = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
     headers: { 'x-api-key': process.env.ANTHROPIC_API_KEY, 'anthropic-version': '2023-06-01', 'Content-Type': 'application/json' },
-    body: JSON.stringify({ model: 'claude-3-haiku-20240307', max_tokens: 1200, temperature: 0.25, messages: [{ role: 'user', content: prompt }] })
+    body: JSON.stringify({ model: 'claude-3-haiku-20240307', max_tokens: 2000, temperature: 0, messages: [{ role: 'user', content: prompt }] })
   });
   if (!r.ok) throw new Error(`Claude ${r.status}`);
   const m = (await r.json()).content[0].text.match(/\{[\s\S]*\}/);
