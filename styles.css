@@ -866,3 +866,93 @@ body.dark-theme .firasah-disclaimer {
 body.dark-theme .firasah-disclaimer p {
     color: #FFB74D;
 }
+
+
+/* ============================================
+   RESULTS NOTIFICATION & AUTO-SCROLL
+   ============================================ */
+
+/* Results ready notification */
+.results-notification {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-100px);
+    background: linear-gradient(135deg, #9D4EDD, #7B2CBF);
+    color: white;
+    padding: 15px 25px;
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 10px 40px rgba(157, 78, 221, 0.4);
+    z-index: 10000;
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    font-weight: 500;
+}
+
+.results-notification.show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+}
+
+.notification-icon {
+    font-size: 1.3em;
+    animation: sparkle 1s ease-in-out infinite;
+}
+
+.notification-text {
+    font-size: 0.95rem;
+}
+
+.notification-arrow {
+    font-size: 1.2em;
+    animation: bounce-down 0.8s ease-in-out infinite;
+}
+
+@keyframes sparkle {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+}
+
+@keyframes bounce-down {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(5px); }
+}
+
+/* Results highlight animation */
+.results-highlight {
+    animation: highlight-pulse 0.8s ease-out;
+}
+
+@keyframes highlight-pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(157, 78, 221, 0.6);
+    }
+    50% {
+        box-shadow: 0 0 0 15px rgba(157, 78, 221, 0.2);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(157, 78, 221, 0);
+    }
+}
+
+/* Scroll indicator for mobile */
+@media (max-width: 768px) {
+    .results-notification {
+        padding: 12px 20px;
+        font-size: 0.9rem;
+        max-width: 90%;
+    }
+    
+    .notification-text {
+        font-size: 0.85rem;
+    }
+}
+
+/* Dark theme adjustments */
+body.dark-theme .results-notification {
+    background: linear-gradient(135deg, #C77DFF, #9D4EDD);
+    box-shadow: 0 10px 40px rgba(199, 125, 255, 0.3);
+}

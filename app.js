@@ -342,6 +342,9 @@ function displayResults(analysis) {
     
     resultsContent.innerHTML = formattedHTML;
     resultsDiv.style.display = 'block';
+    
+    // Auto-scroll to results with smooth animation
+    scrollToResults(resultsDiv);
 }
 
 // Display Kitab Firasat Results with language support
@@ -453,6 +456,55 @@ function displayKitabFirasatResults(interpretation, source, langConfig) {
     
     resultsContent.innerHTML = html;
     resultsDiv.style.display = 'block';
+    
+    // Auto-scroll to results with smooth animation
+    scrollToResults(resultsDiv);
+}
+
+// Auto-scroll to results with notification
+function scrollToResults(resultsDiv) {
+    // Small delay to ensure DOM is updated
+    setTimeout(() => {
+        // Show a brief "Results Ready" notification
+        showResultsNotification();
+        
+        // Smooth scroll to results
+        resultsDiv.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'start'
+        });
+        
+        // Add a highlight animation to the results
+        resultsDiv.classList.add('results-highlight');
+        setTimeout(() => {
+            resultsDiv.classList.remove('results-highlight');
+        }, 2000);
+    }, 300);
+}
+
+// Show notification that results are ready
+function showResultsNotification() {
+    // Remove existing notification if any
+    const existing = document.querySelector('.results-notification');
+    if (existing) existing.remove();
+    
+    const notification = document.createElement('div');
+    notification.className = 'results-notification';
+    notification.innerHTML = `
+        <span class="notification-icon">✨</span>
+        <span class="notification-text">Analisis selesai! Lihat hasil di bawah</span>
+        <span class="notification-arrow">↓</span>
+    `;
+    document.body.appendChild(notification);
+    
+    // Animate in
+    setTimeout(() => notification.classList.add('show'), 10);
+    
+    // Remove after scroll completes
+    setTimeout(() => {
+        notification.classList.remove('show');
+        setTimeout(() => notification.remove(), 300);
+    }, 2500);
 }
 
 // Loading states
