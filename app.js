@@ -3,6 +3,7 @@ let currentUser = null;
 let selectedFile = null;
 let person1File = null;
 let person2File = null;
+let analysisMode = 'summary'; // 'summary' or 'detailed'
 
 // Initialize app
 document.addEventListener('DOMContentLoaded', async () => {
@@ -65,6 +66,29 @@ function toggleTheme() {
         icon.className = 'fas fa-moon';
         localStorage.setItem('theme', 'light');
     }
+}
+
+// Analysis mode selection
+function setAnalysisMode(mode) {
+    analysisMode = mode;
+    
+    // Update button states
+    document.querySelectorAll('.mode-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.dataset.mode === mode) {
+            btn.classList.add('active');
+        }
+    });
+    
+    // Update labels based on language
+    const language = document.getElementById('language-select')?.value || 'my';
+    const labels = {
+        my: { summary: 'Ringkasan Pantas', detailed: 'Analisis Penuh' },
+        en: { summary: 'Quick Summary', detailed: 'Full Analysis' },
+        id: { summary: 'Ringkasan Cepat', detailed: 'Analisis Lengkap' }
+    };
+    
+    console.log(`Analysis mode set to: ${mode}`);
 }
 
 // Load saved theme
@@ -316,7 +340,7 @@ async function getKitabFirasatInterpretation(llavaAnalysis) {
         const startResponse = await fetch('/.netlify/functions/interpret-background', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ llavaAnalysis, language, jobId })
+            body: JSON.stringify({ llavaAnalysis, language, jobId, mode: analysisMode })
         });
         
         // Background function returns 202, but we also handle other cases
@@ -749,13 +773,232 @@ function generateShareText() {
     return templates[language] || templates.my;
 }
 
-// Share to Instagram (opens story composer)
-function shareToInstagram() {
-    const shareText = generateShareText();
-    const url = 'https://firasah.neotodak.com';
+// Share to Instagram (generates downloadable story card)
+async function shareToInstagram() {
+    const interpretation = window.currentInterpretation;
+    if (!interpretation || !interpretation.character_interpretation) {
+        showToast('⚠️ Tiada hasil untuk dikongsi', 'error');
+        return;
+    }
     
-    // Instagram doesn't have direct share API, so we show instructions
-    showShareModal('instagram', shareText, url);
+    showToast('🎨 Menjana kad story...', 'default');
+    
+    try {
+        const cardDataUrl = await generateStoryCard(interpretation);
+        showInstagramModal(cardDataUrl);
+    } catch (error) {
+        console.error('Error generating card:', error);
+        showToast('❌ Gagal menjana kad', 'error');
+    }
+}
+
+// Generate Instagram Story Card (1080x1920)
+async function generateStoryCard(interpretation) {
+    const canvas = document.createElement('canvas');
+    canvas.width = 1080;
+    canvas.height = 1920;
+    const ctx = canvas.getContext('2d');
+    
+    // Background gradient
+    const gradient = ctx.createLinearGradient(0, 0, 1080, 1920);
+    gradient.addColorStop(0, '#1a1a2e');
+    gradient.addColorStop(0.5, '#16213e');
+    gradient.addColorStop(1, '#0f0f23');
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, 1080, 1920);
+    
+    // Decorative elements
+    ctx.fillStyle = 'rgba(157, 78, 221, 0.1)';
+    ctx.beginPath();
+    ctx.arc(900, 200, 300, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(180, 1700, 250, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // Header
+    ctx.fillStyle = '#C77DFF';
+    ctx.font = 'bold 60px Inter, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('🔮 Firasah AI', 540, 150);
+    
+    ctx.fillStyle = '#888';
+    ctx.font = '30px Inter, sans-serif';
+    ctx.fillText('Analisis Wajah Berdasarkan Kitab Firasat', 540, 210);
+    
+    const ci = interpretation.character_interpretation;
+    
+    // Personality Type Box
+    ctx.fillStyle = 'rgba(157, 78, 221, 0.2)';
+    roundRect(ctx, 60, 280, 960, 120, 20);
+    ctx.fill();
+    
+    ctx.fillStyle = '#fff';
+    ctx.font = 'bold 36px Inter, sans-serif';
+    ctx.fillText('🎭 ' + (ci.personality_type || 'Personaliti Unik'), 540, 355);
+    
+    // Summary
+    ctx.fillStyle = '#ddd';
+    ctx.font = '28px Inter, sans-serif';
+    const summary = ci.overall_summary || '';
+    const summaryLines = wrapText(ctx, summary, 900);
+    let y = 480;
+    summaryLines.slice(0, 6).forEach(line => {
+        ctx.fillText(line, 540, y);
+        y += 45;
+    });
+    
+    // Positive Traits Box
+    y += 40;
+    ctx.fillStyle = 'rgba(76, 175, 80, 0.15)';
+    roundRect(ctx, 60, y, 960, 380, 20);
+    ctx.fill();
+    
+    ctx.fillStyle = '#4CAF50';
+    ctx.font = 'bold 32px Inter, sans-serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('✨ Sifat Positif', 100, y + 50);
+    
+    ctx.fillStyle = '#ccc';
+    ctx.font = '26px Inter, sans-serif';
+    const positives = ci.positive_traits || [];
+    positives.slice(0, 5).forEach((trait, i) => {
+        const shortTrait = trait.length > 50 ? trait.substring(0, 47) + '...' : trait;
+        ctx.fillText('• ' + shortTrait, 100, y + 100 + (i * 55));
+    });
+    
+    // Negative Traits Box
+    y += 420;
+    ctx.fillStyle = 'rgba(255, 152, 0, 0.15)';
+    roundRect(ctx, 60, y, 960, 280, 20);
+    ctx.fill();
+    
+    ctx.fillStyle = '#FF9800';
+    ctx.font = 'bold 32px Inter, sans-serif';
+    ctx.fillText('⚠️ Perlu Diperhatikan', 100, y + 50);
+    
+    ctx.fillStyle = '#ccc';
+    ctx.font = '26px Inter, sans-serif';
+    const negatives = ci.negative_traits || [];
+    negatives.slice(0, 3).forEach((trait, i) => {
+        const shortTrait = trait.length > 50 ? trait.substring(0, 47) + '...' : trait;
+        ctx.fillText('• ' + shortTrait, 100, y + 100 + (i * 55));
+    });
+    
+    // Footer CTA
+    ctx.fillStyle = 'rgba(157, 78, 221, 0.3)';
+    roundRect(ctx, 60, 1680, 960, 180, 20);
+    ctx.fill();
+    
+    ctx.fillStyle = '#C77DFF';
+    ctx.font = 'bold 36px Inter, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('🌐 firasah.neotodak.com', 540, 1750);
+    
+    ctx.fillStyle = '#888';
+    ctx.font = '28px Inter, sans-serif';
+    ctx.fillText('Cuba analisis wajah anda!', 540, 1810);
+    
+    return canvas.toDataURL('image/png');
+}
+
+// Helper: Rounded rectangle
+function roundRect(ctx, x, y, width, height, radius) {
+    ctx.beginPath();
+    ctx.moveTo(x + radius, y);
+    ctx.lineTo(x + width - radius, y);
+    ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+    ctx.lineTo(x + width, y + height - radius);
+    ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+    ctx.lineTo(x + radius, y + height);
+    ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+    ctx.lineTo(x, y + radius);
+    ctx.quadraticCurveTo(x, y, x + radius, y);
+    ctx.closePath();
+}
+
+// Helper: Wrap text to lines
+function wrapText(ctx, text, maxWidth) {
+    const words = text.split(' ');
+    const lines = [];
+    let currentLine = '';
+    
+    words.forEach(word => {
+        const testLine = currentLine + (currentLine ? ' ' : '') + word;
+        const metrics = ctx.measureText(testLine);
+        
+        if (metrics.width > maxWidth && currentLine) {
+            lines.push(currentLine);
+            currentLine = word;
+        } else {
+            currentLine = testLine;
+        }
+    });
+    
+    if (currentLine) lines.push(currentLine);
+    return lines;
+}
+
+// Show Instagram modal with generated card
+function showInstagramModal(cardDataUrl) {
+    const modal = document.createElement('div');
+    modal.className = 'share-modal';
+    modal.id = 'share-modal';
+    
+    const language = document.getElementById('language-select')?.value || 'my';
+    const labels = {
+        my: {
+            title: '📸 Kongsi ke Instagram Story',
+            download: '💾 Muat Turun Kad',
+            instruction: 'Muat turun kad, kemudian kongsi ke Instagram Story anda!',
+            close: 'Tutup'
+        },
+        en: {
+            title: '📸 Share to Instagram Story',
+            download: '💾 Download Card',
+            instruction: 'Download the card, then share to your Instagram Story!',
+            close: 'Close'
+        },
+        id: {
+            title: '📸 Bagikan ke Instagram Story',
+            download: '💾 Unduh Kartu',
+            instruction: 'Unduh kartu, lalu bagikan ke Instagram Story anda!',
+            close: 'Tutup'
+        }
+    };
+    const lang = labels[language] || labels.my;
+    
+    modal.innerHTML = `
+        <div class="share-modal-content instagram-card-modal">
+            <h3>${lang.title}</h3>
+            <div class="card-preview">
+                <img src="${cardDataUrl}" alt="Firasah Story Card" />
+            </div>
+            <p class="instruction">${lang.instruction}</p>
+            <div class="modal-buttons">
+                <button class="share-btn instagram" onclick="downloadStoryCard('${cardDataUrl}')">
+                    ${lang.download}
+                </button>
+                <button class="close-modal" onclick="closeShareModal()">${lang.close}</button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    setTimeout(() => modal.classList.add('active'), 10);
+    
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeShareModal();
+    });
+}
+
+// Download the story card
+function downloadStoryCard(dataUrl) {
+    const link = document.createElement('a');
+    link.download = `firasah-story-${Date.now()}.png`;
+    link.href = dataUrl;
+    link.click();
+    showToast('✅ Kad dimuat turun!', 'success');
 }
 
 // Share to WhatsApp

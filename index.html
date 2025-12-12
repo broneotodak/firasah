@@ -58,6 +58,23 @@
                             <option value="id">🇮🇩 Bahasa Indonesia</option>
                         </select>
                     </div>
+                    
+                    <!-- Analysis Mode Selector -->
+                    <div class="analysis-mode-selector">
+                        <label><i class="fas fa-sliders-h"></i> Mod Analisis:</label>
+                        <div class="mode-buttons">
+                            <button class="mode-btn active" data-mode="summary" onclick="setAnalysisMode('summary')">
+                                <i class="fas fa-bolt"></i>
+                                <span>Ringkasan Pantas</span>
+                                <small>~5 saat</small>
+                            </button>
+                            <button class="mode-btn" data-mode="detailed" onclick="setAnalysisMode('detailed')">
+                                <i class="fas fa-microscope"></i>
+                                <span>Analisis Penuh</span>
+                                <small>~15 saat</small>
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Upload Area -->

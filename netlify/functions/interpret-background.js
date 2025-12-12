@@ -16,12 +16,13 @@ exports.handler = async (event, context) => {
   }
 
   // Parse input
-  let llavaAnalysis, language, jobId;
+  let llavaAnalysis, language, jobId, mode;
   try {
     const body = JSON.parse(event.body);
     llavaAnalysis = body.llavaAnalysis;
     language = body.language || 'my';
     jobId = body.jobId || `frs_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`;
+    mode = body.mode || 'summary'; // 'summary' or 'detailed'
   } catch (e) {
     console.error('Parse error:', e);
     return { statusCode: 400, headers, body: JSON.stringify({ error: 'Invalid input' }) };
@@ -55,11 +56,11 @@ exports.handler = async (event, context) => {
 
   // Process interpretation
   try {
-    console.log(`[${jobId}] Starting interpretation...`);
+    console.log(`[${jobId}] Starting interpretation in ${mode} mode...`);
     
     const features = extractFeatures(llavaAnalysis);
     const lang = getLangConfig(language);
-    const prompt = buildPrompt(features, lang);
+    const prompt = buildPrompt(features, lang, mode);
     
     let result = null;
     let provider = null;
@@ -161,10 +162,58 @@ function getLangConfig(lang) {
   }[lang] || getLangConfig('my');
 }
 
-// Build prompt with CLEAR examples - ALL features required
-function buildPrompt(features, lang) {
+// Build prompt with CLEAR examples - mode-aware
+function buildPrompt(features, lang, mode = 'summary') {
   const isMyId = lang.name.includes('Melayu') || lang.name.includes('Indonesia');
   
+  // SUMMARY MODE - Quick analysis, fewer tokens
+  if (mode === 'summary') {
+    if (isMyId) {
+      return `Anda pakar Kitab Firasat. Beri RINGKASAN PANTAS analisis wajah dalam Bahasa Melayu.
+
+CIRI WAJAH:
+${features}
+
+PERATURAN:
+1. Fokus pada ciri PALING MENONJOL sahaja (3-4 ciri utama)
+2. Sifat negatif = KESAN SAMPINGAN positif (BUKAN bertentangan!)
+3. Ringkas tetapi bermakna
+
+OUTPUT JSON:
+{
+  "positive": ["Sifat 1 - penjelasan singkat", "Sifat 2 - penjelasan singkat", "Sifat 3 - penjelasan singkat"],
+  "negative": ["Kesan sampingan 1 - nasihat", "Kesan sampingan 2 - nasihat"],
+  "type": "Jenis Personaliti - penjelasan ringkas",
+  "summary": "3-4 ayat gambaran unik individu ini.",
+  "refs": [{"feature": "Ciri utama", "quote": "Petikan Kitab Firasat"}]
+}
+
+JSON sahaja:`;
+    }
+    
+    return `You are a Kitab Firasat expert. Give QUICK SUMMARY of this face analysis.
+
+FACIAL FEATURES:
+${features}
+
+RULES:
+1. Focus on MOST PROMINENT features only (3-4 main features)
+2. Negative = SIDE EFFECTS of positives (NOT opposites!)
+3. Brief but meaningful
+
+OUTPUT JSON:
+{
+  "positive": ["Trait 1 - brief explanation", "Trait 2 - brief explanation", "Trait 3 - brief explanation"],
+  "negative": ["Side effect 1 - advice", "Side effect 2 - advice"],
+  "type": "Personality Type - brief explanation",
+  "summary": "3-4 sentences unique portrait.",
+  "refs": [{"feature": "Main feature", "quote": "Kitab Firasat quote"}]
+}
+
+JSON only:`;
+  }
+  
+  // DETAILED MODE - Full analysis with all 10 features
   if (isMyId) {
     return `Anda pakar Kitab Firasat. Analisis wajah ini dan beri tafsiran BERMAKNA dalam Bahasa Melayu.
 
